@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styles from './App.css';
-import Login from './Components/login/login'
+import Login from './Components/login/login';
 
 
 
@@ -11,7 +11,7 @@ class App extends Component {
     return (
       <div className={styles.App}>
         <header>
-            <Login/>
+            <Login />
         </header>
       </div>
     );
