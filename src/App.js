@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styles from './App.css';
-import Login from './Components/login/login';
-import { red } from '@mui/material/colors';
+import Login from './Components/login/login'
+import {BrowserRouter,Route,Routes} from 'react-router-dom';
 
 
 
@@ -12,7 +12,11 @@ class App extends Component {
     return (
       <div className={styles.App}>
         <header>
-            <Login />
+            <BrowserRouter>
+                <Routes>
+                    <Route path='/login' element={<Login/>}/>
+                </Routes>
+            </BrowserRouter>
         </header>
       </div>
     );
