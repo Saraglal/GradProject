@@ -1,0 +1,11 @@
+.topbar {
+    display: contents;
+    align-items: right ;
+    width: auto;
+    padding: 10px 0px 10px 0px;
+}
+
+.search {
+    padding-left: 20px;
+    width: 600px;
+}
