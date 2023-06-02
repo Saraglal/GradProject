@@ -39,6 +39,7 @@ export default function AddRequests() {
             numberOfUnits: "",
             dateOfBirth: "",
             BloodType: "",
+            roleId: localStorage.getItem('roleId'),
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {

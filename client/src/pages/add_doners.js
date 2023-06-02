@@ -27,6 +27,7 @@ export default function AddDoners() {
     diseases: "",
     bloodType:"",
     lastDonation: "",
+    roleId: localStorage.getItem('roleId'),
 };
 
   const [addDonerData, setAddDonerData] = useState(initialValues);

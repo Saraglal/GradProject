@@ -27,6 +27,7 @@ const Home = () => {
         try {
             const decodedToken = jwt.decode(token);
             roleId = decodedToken && decodedToken.RoleId ? decodedToken.RoleId : null;
+            localStorage.setItem('roleId', roleId);
         } catch (error) {
             console.error('Error decoding token:', error);
         }
