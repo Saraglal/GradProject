@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import styles from './App.css';
 import Login from './Components/login/login';
@@ -16,24 +16,34 @@ import Approval from './pages/approval';
 
 const MainContent = () => {
     const location = useLocation();
-    const showSidebar = location.pathname !== '/login';
+
+    useEffect(() => {
+        // Check if the user is logged in
+        const token = localStorage.getItem('token');
+        if (!token && location.pathname !== '/login') {
+            // Redirect to login if not logged in
+            window.location.href = '/login';
+        }
+    }, [location.pathname]);
 
     return (
         <div>
-            {showSidebar && <SideBar>
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/doners" element={<Doners />} />
-                <Route path="/requests" element={<Requests />} />
-                <Route path="/add_doners" element={<AddDoners />} />
-                <Route path="/add_requests" element={<AddRequests />} />
-                <Route path="/bloodstock" element={<BloodStock />} />
-                <Route path="/place_analysis" element={<PlaceAnalysis />} />
-                <Route path="/doner_profile" element={<DonerFile />} />
-                <Route path="/request_file" element={<RequestFile />} />
-                <Route path="/approval" element={<Approval />} />
-            </Routes>
-            </SideBar>}
+            {location.pathname !== '/login' && (
+                <SideBar>
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/doners" element={<Doners />} />
+                        <Route path="/requests" element={<Requests />} />
+                        <Route path="/add_doners" element={<AddDoners />} />
+                        <Route path="/add_requests" element={<AddRequests />} />
+                        <Route path="/bloodstock" element={<BloodStock />} />
+                        <Route path="/place_analysis" element={<PlaceAnalysis />} />
+                        <Route path="/doner_profile" element={<DonerFile />} />
+                        <Route path="/request_file" element={<RequestFile />} />
+                        <Route path="/approval" element={<Approval />} />
+                    </Routes>
+                </SideBar>
+            )}
         </div>
     );
 };

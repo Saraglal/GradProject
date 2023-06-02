@@ -1,6 +1,5 @@
-// models/userModel.js
 const { DataTypes } = require('sequelize');
-const sequelize = require('../../client/config/database');
+const sequelize = require('../config/database');
 
 const User = sequelize.define('bb_users', {
     UserID: {
@@ -17,7 +16,7 @@ const User = sequelize.define('bb_users', {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    Roleid: {
+    RoleId: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
@@ -29,6 +28,8 @@ const User = sequelize.define('bb_users', {
         type: DataTypes.INTEGER,
         allowNull: true,
     },
+}, {
+    timestamps: false, // Disable timestamps (createdAt and updatedAt)
 });
 
 module.exports = User;
