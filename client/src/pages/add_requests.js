@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import Box from "@mui/material/Box";
@@ -49,12 +49,18 @@ export default function AddRequests() {
 
     const {
         handleSubmit,
-        handleChange,
+        // handleChange,
         values,
         touched,
         errors,
         setFieldValue,
     } = formik;
+
+    const [requestData, setRequestData] = useState(formik.initialValues);
+
+    const handleChange = (event) => {
+        setRequestData({...requestData, [event.target.name]: event.target.value})
+    }
 
     return (
         <Container className={style.container} component="main" maxWidth="xl">
@@ -81,7 +87,7 @@ export default function AddRequests() {
                                 id="fullName"
                                 label="Full Name"
                                 autoFocus
-                                value={values.fullName}
+                                value={requestData.fullName}
                                 onChange={handleChange}
                                 error={touched.fullName && Boolean(errors.fullName)}
                                 helperText={touched.fullName && errors.fullName}
@@ -95,7 +101,7 @@ export default function AddRequests() {
                                 label="Phone Number"
                                 name="phoneNumber"
                                 autoComplete="phone-number"
-                                value={values.phoneNumber}
+                                value={requestData.phoneNumber}
                                 onChange={handleChange}
                                 error={touched.phoneNumber && Boolean(errors.phoneNumber)}
                                 helperText={touched.phoneNumber && errors.phoneNumber}
@@ -117,7 +123,7 @@ export default function AddRequests() {
                                 id="patientFullName"
                                 label="Full Name"
                                 autoFocus
-                                value={values.patientFullName}
+                                value={requestData.patientFullName}
                                 onChange={handleChange}
                                 error={touched.patientFullName && Boolean(errors.patientFullName)}
                                 helperText={touched.patientFullName && errors.patientFullName}
@@ -131,7 +137,7 @@ export default function AddRequests() {
                                 label="National Number"
                                 name="nationalNumber"
                                 autoComplete="nationalNumber"
-                                value={values.nationalNumber}
+                                value={requestData.nationalNumber}
                                 onChange={handleChange}
                                 error={touched.nationalNumber && Boolean(errors.nationalNumber)}
                                 helperText={touched.nationalNumber && errors.nationalNumber}
@@ -146,7 +152,7 @@ export default function AddRequests() {
                                 type="text"
                                 id="reason"
                                 autoComplete="reason"
-                                value={values.reason}
+                                value={requestData.reason}
                                 onChange={handleChange}
                                 error={touched.reason && Boolean(errors.reason)}
                                 helperText={touched.reason && errors.reason}
@@ -161,7 +167,7 @@ export default function AddRequests() {
                                 type="number"
                                 id="numberOfUnits"
                                 autoComplete="numberOfUnits"
-                                value={values.numberOfUnits}
+                                value={requestData.numberOfUnits}
                                 onChange={handleChange}
                                 error={touched.numberOfUnits && Boolean(errors.numberOfUnits)}
                                 helperText={touched.numberOfUnits && errors.numberOfUnits}
@@ -175,7 +181,7 @@ export default function AddRequests() {
                                 label="Date Of Birth"
                                 name="dateOfBirth"
                                 autoComplete="dateOfBirth"
-                                value={values.dateOfBirth}
+                                value={requestData.dateOfBirth}
                                 onChange={handleChange}
                                 error={touched.dateOfBirth && Boolean(errors.dateOfBirth)}
                                 helperText={touched.dateOfBirth && errors.dateOfBirth}
@@ -193,8 +199,8 @@ export default function AddRequests() {
                                     labelId="BloodType"
                                     id="BloodType"
                                     name="BloodType"
-                                    value={values.BloodType}
-                                    onChange={(e) => setFieldValue("BloodType", e.target.value)}
+                                    value={requestData.BloodType}
+                                    onChange={handleChange}
                                     error={touched.BloodType && Boolean(errors.BloodType)}
                                 >
                                     <MenuItem value="">
