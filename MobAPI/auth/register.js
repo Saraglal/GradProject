@@ -5,11 +5,11 @@ const mysql = require('mysql2');
 
 // Create a MySQL connection
 const connection = mysql.createConnection({
-  host: 'bloodbank.ddns.net',
-  user: 'root',
+  host: 'fdb1029.awardspace.net',
+  user: '4324570_bloodbanksystem',
   port: '3306',
-  password: '123456789',
-  database: 'BloodBankSystem'
+  password: 'mKf}SOd93W#H/}5k',
+  database: '4324570_bloodbanksystem'
 });
 
 router.post('/', (req, res) => {
