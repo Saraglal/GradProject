@@ -5,7 +5,7 @@ const mysql = require('mysql2');
 
 // Create a MySQL connection
 const connection = mysql.createConnection({
-  host: 'BloodBank.mywire.org',
+  host: 'bloodbank.ddns.net',
   user: 'root',
   port: '3306',
   password: '123456789',
