@@ -5,11 +5,11 @@ const nodemailer = require('nodemailer');
 
 // Create a MySQL connection
 const connection = mysql.createConnection({
-  host: 'bloodbank.ddns.net',
-  user: 'root',
+  host: 'fdb1029.awardspace.net',
+  user: '4324570_bloodbanksystem',
   port: '3306',
   password: 'mKf}SOd93W#H/}5k',
-  database: 'BloodBankSystem'
+  database: '4324570_bloodbanksystem'
 });
 
 // Create a nodemailer transporter for sending emails
