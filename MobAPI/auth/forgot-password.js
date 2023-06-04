@@ -8,7 +8,7 @@ const connection = mysql.createConnection({
   host: 'bloodbank.ddns.net',
   user: 'root',
   port: '3306',
-  password: '123456789',
+  password: 'mKf}SOd93W#H/}5k',
   database: 'BloodBankSystem'
 });
 
