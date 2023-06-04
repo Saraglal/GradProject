@@ -5,7 +5,7 @@ const nodemailer = require('nodemailer');
 
 // Create a MySQL connection
 const connection = mysql.createConnection({
-  host: 'bbdatabase-instance-1.ch1eb2qhd2ej.eu-north-1.rds.amazonaws.com',
+  host: 'BloodBank.mywire.org',
   user: 'root',
   port: '3306',
   password: '123456789',
