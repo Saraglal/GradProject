@@ -5,11 +5,11 @@ const mysql = require('mysql2');
 
 // Create a MySQL connection
 const connection = mysql.createConnection({
-  host: 'fdb1029.awardspace.net',
-  user: '4324570_bloodbanksystem',
+  host: 'bloodbanksystem.mysql.database.azure.com',
+  user: 'root1',
   port: '3306',
-  password: 'mKf}SOd93W#H/}5k',
-  database: '4324570_bloodbanksystem'
+  password: '123456789Me',
+  database: 'bloodbanksystem'
 });
 
 // Endpoint for password reset
