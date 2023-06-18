@@ -1,4 +1,4 @@
-import React from "react" ;
+import React, {useState} from "react" ;
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -17,17 +17,35 @@ import Select from '@mui/material/Select';
 const theme = createTheme();
 
 export default function AddDoners() {
+  const initialValues = {
+    fullName: "",
+    phoneNumber: "",
+    gender: "",
+    nationalNumber: "",
+    address: "",
+    dateOfBirth: "",
+    diseases: "",
+    bloodType:"",
+    lastDonation: "",
+    roleId: localStorage.getItem('roleId'),
+};
+
+  const [addDonerData, setAddDonerData] = useState(initialValues);
+
+  const handleChange = (event) => {
+    setAddDonerData({...addDonerData, [event.target.name]: event.target.value})
+}
   //handleSubmit for text items
   const handleSubmit = (event) => {
     event.preventDefault();
   };
   //handleChange for select items
-  const [Gender, setGender] = React.useState('');
-  const [BloodType, setType] = React.useState('');
-  const handleChange = (event) => {
-    setGender(event.target.value);
-    setType(event.target.value);
-  };
+  // const [Gender, setGender] = React.useState('');
+  // const [BloodType, setType] = React.useState('');
+  // const handleChange = (event) => {
+  //   setGender(event.target.value);
+  //   setType(event.target.value);
+  // };
 
 
   return (
@@ -55,7 +73,9 @@ export default function AddDoners() {
                   fullWidth
                   id="full name"
                   label="Full Name"
-                  name="Full Name"
+                  name="fullName"
+                  value={addDonerData.fullName}
+                  onChange={handleChange}
                   autoComplete="Full Name"
                 />
               </Grid>
@@ -63,10 +83,12 @@ export default function AddDoners() {
                 <TextField
                   required
                   fullWidth
-                  name="national number"
+                  name="nationalNumber"
                   label="National Number"
                   type="National Number"
                   id="National Number"
+                  value={addDonerData.nationalNumber}
+                  onChange={handleChange}
                   autoComplete="National Number"
                 />
               </Grid>
@@ -79,9 +101,10 @@ export default function AddDoners() {
                         type="Gender"
                         labelId="Gender"
                         id="Gender"
-                        value={Gender}
-                        label="Gender"
+                        name="gender"
+                        value={addDonerData.gender}
                         onChange={handleChange}
+                        label="Gender"
                         onSubmit={handleSubmit}
                     >
                         <MenuItem value="">
@@ -98,7 +121,9 @@ export default function AddDoners() {
                   fullWidth
                   id="address"
                   label="Address"
-                  name="Address"
+                  name="address"
+                  value={addDonerData.address}
+                  onChange={handleChange}
                   autoComplete="Address"
                 />
               </Grid>
@@ -108,7 +133,9 @@ export default function AddDoners() {
                   fullWidth
                   id="phone number"
                   label="Phone Number"
-                  name="phone number"
+                  name="phoneNumber"
+                  value={addDonerData.phoneNumber}
+                  onChange={handleChange}
                   autoComplete="phone-number"
                 />
               </Grid>
@@ -118,7 +145,9 @@ export default function AddDoners() {
                   fullWidth
                   id="Date Of Birth"
                   label="Date Of Birth"
-                  name="Date Of Birth"
+                  name="dateOfBirth"
+                  value={addDonerData.dateOfBirth}
+                  onChange={handleChange}
                   autoComplete="Date Of Birth"
                 />
               </Grid>
@@ -128,7 +157,9 @@ export default function AddDoners() {
                   fullWidth
                   id="Diseases"
                   label="Diseases"
-                  name="Diseases"
+                  name="diseases"
+                  value={addDonerData.diseases}
+                  onChange={handleChange}
                   autoComplete="Diseases"
                 />
               </Grid>
@@ -140,10 +171,10 @@ export default function AddDoners() {
                         type="BloodType"
                         labelId="BloodType"
                         id="BloodType"
-                        value={BloodType}
+                        name="bloodType"
+                        value={addDonerData.bloodType}
                         label="BloodType"
                         onChange={handleChange}
-                        onSubmit={handleSubmit}
                     >
                         <MenuItem value="">
                         <em>None</em>
@@ -166,7 +197,9 @@ export default function AddDoners() {
                   fullWidth
                   id="LastDonation"
                   label="LastDonation"
-                  name="LastDonation"
+                  name="lastDonation"
+                  value={addDonerData.lastDonation}
+                  onChange={handleChange}
                   autoComplete="LastDonation"
                 />
               </Grid>
