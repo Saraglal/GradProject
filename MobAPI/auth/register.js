@@ -53,8 +53,6 @@ router.post('/', (req, res) => {
             	name: name,
            	 	email: email,
             	phone: phone,
-                gender : gender,
-                birthdate: birthdate
           };
 
           console.log('User registered successfully');
