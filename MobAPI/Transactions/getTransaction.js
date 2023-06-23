@@ -14,7 +14,7 @@ const connection = mysql.createConnection({
 router.post('/', (req, res) => {
     const { HumanID, TransTypeId } = req.query;
 
-    const getQuery = `SELECT * FROM bb_transactions WHERE HumanID = ? AND TransTypeId = ?`;
+    const getQuery = `SELECT TransId,TransDate,HumanName,PhoneNumber,TransTypeId,Accepted,HumanID,UnitNumber,BloodType,Notes FROM bb_transactions WHERE HumanID = ? AND TransTypeId = ?`;
     const values = [HumanID, TransTypeId];
     connection.query(getQuery, values, (err, result) => {
         if (result) {
