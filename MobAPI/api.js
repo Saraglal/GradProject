@@ -9,8 +9,8 @@ const resetPasswordRouter = require('./auth/reset-password');
 
 const profileRouter = require('./profile/profile');
 
-const transactionsRouter = require('./transactions/Transactions');
-const getTransactionsRouter = require('./transactions/getTransactions');
+const transactionsRouter = require('./Transactions/transactions');
+const getTransactionsRouter = require('./Transactions/getTransactions');
 
 app.use('/login', loginRouter);
 app.use('/register', registerRouter);
