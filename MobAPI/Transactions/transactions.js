@@ -14,7 +14,6 @@ const connection = mysql.createConnection({
 router.post('/', (req, res) => {
 
     const {
-        TransDate,
         PhoneNumber,
         HumanName,
         TransTypeId,
@@ -26,6 +25,12 @@ router.post('/', (req, res) => {
         Notes,
     } = req.query;
 
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+
+    const TransDate = `${year}-${month}-${day}`;
     const Accepted = 0;
     const BranchNo = 1;
 
