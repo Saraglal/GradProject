@@ -13,11 +13,27 @@ const connection = mysql.createConnection({
 
 router.post('/', (req, res) => {
     const { HumanID, TransTypeId } = req.query;
-
-    const getQuery = `SELECT TransId,TransDate,HumanName,PhoneNumber,TransTypeId,Accepted,HumanID,UnitNumber,BloodType,Notes FROM bb_transactions WHERE HumanID = ? AND TransTypeId = ?`;
+    const getQuery = `SELECT
+                    bb_transactions.TransId,
+                    bb_transactions.TransDate,
+                    bb_transactions.HumanName,
+                    bb_transactions.PhoneNumber,
+                    bb_transactions.TransTypeId,
+                    bb_transactions.Accepted,
+                    bb_transactions.HumanID,
+                    bb_transactions.UnitNumber,
+                    bb_transactions.BloodType,
+                    bb_transactions.BirthDate,
+                    bb_transactions.Notes,
+                    bb_branchtypes.BranchTypename
+                    FROM
+                    bb_transactions ,
+                    bb_branchtypes
+                    INNER JOIN bb_branches ON bb_branches.BranchTypeId = bb_branchtypes.BranchTypeId AND bb_transactions.BranchNo = bb_branches.BranchNo
+                    WHERE HumanID = ? AND TransTypeId = ?`;
     const values = [HumanID, TransTypeId];
     connection.query(getQuery, values, (err, result) => {
-        if (result) {
+        if (result && result.length > 0) {
             res.status(200).json({
                 message: 'Requests are retrieved successfully',
                 result: result
