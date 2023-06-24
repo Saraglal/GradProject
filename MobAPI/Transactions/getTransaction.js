@@ -15,22 +15,21 @@ router.post('/', (req, res) => {
     const { HumanID, TransTypeId } = req.query;
     const getQuery = `SELECT
                     bb_transactions.TransId,
+                    bb_branches.BranchName,
                     bb_transactions.TransDate,
                     bb_transactions.HumanName,
                     bb_transactions.PhoneNumber,
                     bb_transactions.TransTypeId,
                     bb_transactions.Accepted,
                     bb_transactions.HumanID,
+                    bb_transactions.BirthDate,
                     bb_transactions.UnitNumber,
                     bb_transactions.BloodType,
-                    bb_transactions.BirthDate,
-                    bb_transactions.Notes,
-                    bb_branchtypes.BranchTypename
+                    bb_transactions.Notes
                     FROM
-                    bb_transactions ,
-                    bb_branchtypes
-                    INNER JOIN bb_branches ON bb_branches.BranchTypeId = bb_branchtypes.BranchTypeId AND bb_transactions.BranchNo = bb_branches.BranchNo
-                    WHERE HumanID = ? AND TransTypeId = ?`;
+                    bb_transactions
+                    INNER JOIN bb_branches ON bb_transactions.BranchNo = bb_branches.BranchNo
+                    WHERE bb_transactions.HumanID = ? AND bb_transactions.TransTypeId = ?`;
     const values = [HumanID, TransTypeId];
     connection.query(getQuery, values, (err, result) => {
         if (result && result.length > 0) {
