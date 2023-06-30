@@ -24,9 +24,9 @@ app.use('/profile', profileRouter);
 
 app.use('/transactions', transactionsRouter);
 app.use('/getTransactions', getTransactionsRouter);
-app.use('/questionResponseRouter', questionResponseRouter);
+app.use('/questionResponse', questionResponseRouter);
 
-app.use('/getBranchesRouter', getBranchesRouter);
+app.use('/getBranches', getBranchesRouter);
 
 app.listen(3003, () => {
   console.log('Server listening on port 3003');
