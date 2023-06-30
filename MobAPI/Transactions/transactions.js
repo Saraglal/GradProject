@@ -18,11 +18,12 @@ router.post('/', (req, res) => {
         HumanName,
         TransTypeId,
         HumanID,
-        CampID,
         BirthDate,
         UnitNumber,
         BloodType,
         Notes,
+        DonationDate,
+        BranchName,
     } = req.query;
 
     const currentDate = new Date();
@@ -32,18 +33,81 @@ router.post('/', (req, res) => {
 
     const TransDate = `${year}-${month}-${day}`;
     const Accepted = 0;
-    const BranchNo = 1;
 
+    let insertQuery, values;
     // Create a new Transaction record in the database
-    const insertQuery = 'INSERT INTO bb_transactions (TransDate, HumanName, PhoneNumber, HumanID, Notes, BirthDate, UnitNumber, BloodType, Accepted, BranchNo, TransTypeId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-    const values =[TransDate, HumanName, PhoneNumber, HumanID, Notes, BirthDate, UnitNumber, BloodType, Accepted, BranchNo, TransTypeId];
-    connection.query(insertQuery, values, (err, result) => {
-        if (err) {
-            console.log(err);
-            res.status(500).json({ message: 'Error creating Transaction' });
-        }
-        res.status(201).json({ message: 'Transaction created successfully'});
-    });
+    if (TransTypeId === 2) {
+        const BranchNo = 1;
+        insertQuery = 'INSERT INTO bb_transactions (TransDate, HumanName, PhoneNumber, HumanID, Notes, BirthDate, UnitNumber, BloodType, Accepted, BranchNo, TransTypeId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        values = [TransDate, HumanName, PhoneNumber, HumanID, Notes, BirthDate, UnitNumber, BloodType, Accepted, BranchNo, TransTypeId];
+        connection.query(insertQuery, values, (err, result) => {
+            if (err) {
+                console.log(err);
+                res.status(500).json({ message: 'Error creating Transaction' });
+            }
+            res.status(201).json({ message: 'Transaction created successfully' });
+        });
+    } else {
+
+        const selectQuery = 'SELECT DISTINCT\n' +
+            'bb_branches.BranchNo\n' +
+            'FROM\n' +
+            'bb_branches\n' +
+            'WHERE\n' +
+            'bb_branches.BranchName = ?';
+        connection.query(selectQuery, BranchName, (err, result) => {
+            if (err) {
+                console.log(err);
+                res.status(500).json({ message: 'Error creating Transaction' });
+            }
+            const BranchNo = result;
+            insertQuery = 'INSERT INTO bb_transactions (TransDate, HumanName, PhoneNumber, HumanID, Notes, BirthDate, UnitNumber, BloodType, Accepted, BranchNo, TransTypeId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            values = [DonationDate, HumanName, PhoneNumber, HumanID, Notes, BirthDate, UnitNumber, BloodType, Accepted, BranchNo, TransTypeId];
+            connection.query(insertQuery, values, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    res.status(500).json({ message: 'Error creating Transaction' });
+                }
+                const selectQuery = 'SELECT DISTINCT\n' +
+                    'bb_humanos.FirstDonation,\n' +
+                    'bb_humanos.LastDonation\n' +
+                    'FROM\n' +
+                    'bb_humanos\n' +
+                    'WHERE\n' +
+                    'bb_humanos.HumanID = ?'
+                connection.query(selectQuery, HumanID, (err, result) => {
+                    if (err) {
+                        console.log(err);
+                        res.status(500).json({ message: 'Error creating Transaction' });
+                    } else {
+                        if (!result.FirstDonation) {
+                            const updateQuery = 'UPDATE bb_humanos SET FirstDonation = ? WHERE HumanID = ?';
+                            values = [DonationDate, HumanID];
+                            connection.query(updateQuery, values, (err, result) => {
+                                if (err) {
+                                    console.log(err);
+                                    res.status(500).json({ message: 'Error creating Transaction' });
+                                }
+                                res.status(201).json({ message: 'Transaction created successfully' });
+                            });
+                        } else {
+                            const updateQuery = 'UPDATE bb_humanos SET LastDonation = ? WHERE HumanID = ?';
+                            values = [DonationDate, HumanID];
+                            connection.query(updateQuery, values, (err, result) => {
+                                if (err) {
+                                    console.log(err);
+                                    res.status(500).json({ message: 'Error creating Transaction' });
+                                }
+                                res.status(201).json({ message: 'Transaction created successfully' });
+                            });
+                        }
+                    }
+                });
+            });
+        });
+
+    }
 });
+
 
 module.exports = router;
