@@ -60,9 +60,10 @@ router.post('/', (req, res) => {
                 console.log(err);
                 res.status(500).json({ message: 'Error creating Transaction' });
             }
-            const BranchNo = result;
+            const Unitnumber = 1;
+            const BranchNo = result[0].BranchNo;
             insertQuery = 'INSERT INTO bb_transactions (TransDate, HumanName, PhoneNumber, HumanID, Notes, BirthDate, UnitNumber, BloodType, Accepted, BranchNo, TransTypeId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-            values = [DonationDate, HumanName, PhoneNumber, HumanID, Notes, BirthDate, UnitNumber, BloodType, Accepted, BranchNo, TransTypeId];
+            values = [DonationDate, HumanName, PhoneNumber, HumanID, Notes, BirthDate, Unitnumber, BloodType, Accepted, BranchNo, TransTypeId];
             connection.query(insertQuery, values, (err, result) => {
                 if (err) {
                     console.log(err);
