@@ -29,7 +29,7 @@ router.post('/', (req, res) => {
     const answeredQuestion = questions.find(q => q.question === 'yes');
 
     if (answeredQuestion) {
-        res.status(200).json({ message: answeredQuestion.response });
+        res.status(400).json({ message: answeredQuestion.response });
     } else {
         res.status(200).json({ message: 'User is ready to donate.' });
     }
