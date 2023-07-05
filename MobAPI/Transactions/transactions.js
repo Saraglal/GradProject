@@ -36,7 +36,7 @@ router.post('/', (req, res) => {
 
     let insertQuery, values;
     // Create a new Transaction record in the database
-    if (TransTypeId === 2) {
+    if (parseInt(TransTypeId) === 2) {
         const BranchNo = 1;
         insertQuery = 'INSERT INTO bb_transactions (TransDate, HumanName, PhoneNumber, HumanID, Notes, BirthDate, UnitNumber, BloodType, Accepted, BranchNo, TransTypeId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
         values = [TransDate, HumanName, PhoneNumber, HumanID, Notes, BirthDate, UnitNumber, BloodType, Accepted, BranchNo, TransTypeId];
