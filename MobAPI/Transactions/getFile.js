@@ -7,7 +7,7 @@ const CLIENT_SECRET = 'wcmDiRE8ywzXW1ZbizjueQfG1TvPN5oh';
 const ACCESS_TOKEN = '41WjsAuVT7GKOicJwI4dU2nPCHjayveW';
 const folderId = '215905083396';
 
-router.get('/:HumanID', async (req, res) => {
+router.get('/', async (req, res) => {
     const HumanID = req.params.HumanID;
 
     try {
