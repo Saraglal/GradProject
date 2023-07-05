@@ -8,7 +8,7 @@ const ACCESS_TOKEN = '41WjsAuVT7GKOicJwI4dU2nPCHjayveW';
 const folderId = '215905083396';
 
 router.get('/', async (req, res) => {
-    const HumanID = req.params.HumanID;
+    const HumanID = req.query.HumanID;
 
     try {
         // Search for the file by name within the specified folder
@@ -18,28 +18,35 @@ router.get('/', async (req, res) => {
             },
         });
 
-        // Retrieve the fileId from the search response
-        const fileId = response.data.entries[0].id;
+        // Check if the response contains any entries
+        if (response.data.entries && response.data.entries.length > 0) {
+            // Retrieve the fileId from the search response
+            const fileId = response.data.entries[0].id;
 
-        // Download the file using the fileId
-        const downloadResponse = await axios.get(`https://api.box.com/2.0/files/${fileId}/content`, {
-            responseType: 'stream',
-            headers: {
-                Authorization: `Bearer ${ACCESS_TOKEN}`,
-            },
-        });
+            // Download the file using the fileId
+            const downloadResponse = await axios.get(`https://api.box.com/2.0/files/${fileId}/content`, {
+                responseType: 'stream',
+                headers: {
+                    Authorization: `Bearer ${ACCESS_TOKEN}`,
+                },
+            });
 
-        // Set the appropriate headers for the file download
-        res.setHeader('Content-disposition', `attachment; HumanID=${downloadResponse.headers['x-file-name']}`);
-        res.setHeader('Content-type', downloadResponse.headers['content-type']);
+            // Set the appropriate headers for the file download
+            res.setHeader('Content-disposition', `attachment; filename=${downloadResponse.headers['x-file-name']}`);
+            res.setHeader('Content-type', downloadResponse.headers['content-type']);
 
-        // Pipe the file data to the response stream
-        downloadResponse.data.pipe(res);
+            // Pipe the file data to the response stream
+            downloadResponse.data.pipe(res);
+        } else {
+            console.error('File not found');
+            res.status(404).json({ error: 'File not found' });
+        }
     } catch (error) {
         console.error('File download failed:', error.response.data);
         res.status(500).json({ error: 'File download failed' });
     }
 });
+
 
 
 module.exports = router;
