@@ -1,10 +1,13 @@
 .container {
     display: flex;
+    min-height: 100vh;
 }
 
 main {
-    width: 100%;
+    flex: 1;
     transition: transform 0.3s;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar {
@@ -95,4 +98,27 @@ main {
 .main-content {
     transition: margin-left 0.3s ease-in-out;
     margin-left: 70px; /* Resetting the margin-left for the main content */
+}
+.logout {
+    display: flex;
+    color: #fff;
+    text-decoration: none;
+    gap: 15px;
+    padding: 10px 5px 10px 25px;
+    font-size: 20px;
+    transition: all 0.5s;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: auto;
+}
+
+.logout_text {
+    font-size: 25px;
+    padding-left: 10px;
+}
+.logout:hover {
+    background-color: #b9bac946;
+    color: #fff;
+    transition: all 0.5s;
+    cursor: pointer;
 }

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import Box from "@mui/material/Box";
@@ -14,54 +14,103 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
+import { useNavigate } from 'react-router-dom';
 import Typography from "@mui/material/Typography";
 import style from "./add_requests.module.css";
+import axios from "axios";
 
 const validationSchema = yup.object().shape({
-    fullName: yup.string().required("Full Name is required"),
-    phoneNumber: yup.string().required("Phone Number is required"),
-    patientFullName: yup.string().required("Patient Full Name is required"),
-    nationalNumber: yup.string().required("National Number is required"),
-    reason: yup.string().required("Reason is required"),
-    numberOfUnits: yup.number().required("Number of Units is required"),
-    dateOfBirth: yup.string().required("Date of Birth is required"),
+    RName: yup.string().required("Full Name is required"),
+    PhoneNumber: yup.string().required("Phone Number is required"),
+    HumanName: yup.string().required("Patient Full Name is required"),
+    HumanID: yup.string().required("National Number is required"),
+    Notes: yup.string().required("Reason is required"),
+    UnitNumber: yup.number().required("Number of Units is required"),
+    BirthDate: yup.string().required("Date of Birth is required"),
     BloodType: yup.string().required("Blood Type is required"),
 });
 
 export default function AddRequests() {
+    const navigate = useNavigate();
     const formik = useFormik({
         initialValues: {
-            fullName: "",
-            phoneNumber: "",
-            patientFullName: "",
-            nationalNumber: "",
-            reason: "",
-            numberOfUnits: "",
-            dateOfBirth: "",
+            RName: "",
+            PhoneNumber: "",
+            HumanName: "",
+            HumanID: "",
+            TransTypeId:2,
+            Accepted:0,
+            Notes: "",
+            UnitNumber: "",
+            BirthDate: "",
             BloodType: "",
-            roleId: localStorage.getItem('roleId'),
+            BranchNo: localStorage.getItem("branchNo"),
+            CampID: localStorage.getItem("CampID"),
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
             console.log("Form submitted successfully", values);
             // Process the form data or make API calls here
+            fetch("http://localhost:3000/transaction/addTransaction", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(values),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log("Form submission successful", data);
+                    navigate('/requests');
+                })
+                .catch((error) => {
+                    console.error("Form submission error", error);
+                });
         },
     });
 
     const {
         handleSubmit,
-        // handleChange,
         values,
         touched,
         errors,
         setFieldValue,
     } = formik;
 
-    const [requestData, setRequestData] = useState(formik.initialValues);
-
     const handleChange = (event) => {
-        setRequestData({...requestData, [event.target.name]: event.target.value})
-    }
+        const { name, value } = event.target;
+        setFieldValue(name, value);
+    };
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
+
+    const handleFileUpload = (event) => {
+        const files = event.target.files;
+        const formData = new FormData();
+
+        for (let i = 0; i < files.length; i++) {
+            formData.append("file", files[i]);
+        }
+
+        // Make the HTTP request to upload the files
+        axios.post("http://example.com/upload", formData)
+            .then((response) => {
+                // Handle the response after file upload
+                console.log(response.data);
+            })
+            .catch((error) => {
+                // Handle any errors during file upload
+                console.error(error);
+            });
+    };
+
 
     return (
         <Container className={style.container} component="main" maxWidth="xl">
@@ -82,16 +131,16 @@ export default function AddRequests() {
                         <Grid className={style.relative} item xs={12} sm={6}>
                             <TextField
                                 autoComplete="given-name"
-                                name="fullName"
+                                name="RName"
                                 required
                                 fullWidth
-                                id="fullName"
+                                id="RName"
                                 label="Full Name"
                                 autoFocus
-                                value={requestData.fullName}
+                                value={values.RName}
                                 onChange={handleChange}
-                                error={touched.fullName && Boolean(errors.fullName)}
-                                helperText={touched.fullName && errors.fullName}
+                                error={touched.RName && Boolean(errors.RName)}
+                                helperText={touched.RName && errors.RName}
                             />
                         </Grid>
                         <Grid className={style.relative} item xs={12} sm={6}>
@@ -100,12 +149,15 @@ export default function AddRequests() {
                                 fullWidth
                                 id="phone-number"
                                 label="Phone Number"
-                                name="phoneNumber"
+                                name="PhoneNumber"
+                                inputProps={{
+                                    maxLength: 11,
+                                }}
                                 autoComplete="phone-number"
-                                value={requestData.phoneNumber}
+                                value={values.PhoneNumber}
                                 onChange={handleChange}
-                                error={touched.phoneNumber && Boolean(errors.phoneNumber)}
-                                helperText={touched.phoneNumber && errors.phoneNumber}
+                                error={touched.PhoneNumber && Boolean(errors.PhoneNumber)}
+                                helperText={touched.PhoneNumber && errors.PhoneNumber}
                             />
                         </Grid>
                     </Grid>
@@ -118,74 +170,85 @@ export default function AddRequests() {
                         <Grid item xs={12}>
                             <TextField
                                 autoComplete="given-name"
-                                name="patientFullName"
+                                name="HumanName"
                                 required
                                 fullWidth
-                                id="patientFullName"
+                                id="HumanName"
                                 label="Full Name"
                                 autoFocus
-                                value={requestData.patientFullName}
+                                value={values.HumanName}
                                 onChange={handleChange}
-                                error={touched.patientFullName && Boolean(errors.patientFullName)}
-                                helperText={touched.patientFullName && errors.patientFullName}
+                                error={touched.HumanName && Boolean(errors.HumanName)}
+                                helperText={touched.HumanName && errors.HumanName}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 required
                                 fullWidth
-                                id="nationalNumber"
+                                id="HumanID"
                                 label="National Number"
-                                name="nationalNumber"
-                                autoComplete="nationalNumber"
-                                value={requestData.nationalNumber}
+                                name="HumanID"
+                                autoComplete="HumanID"
+                                inputProps={{
+                                    maxLength: 15,
+                                }}
+                                value={values.HumanID}
                                 onChange={handleChange}
-                                error={touched.nationalNumber && Boolean(errors.nationalNumber)}
-                                helperText={touched.nationalNumber && errors.nationalNumber}
+                                error={touched.HumanID && Boolean(errors.HumanID)}
+                                helperText={touched.HumanID && errors.HumanID}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 required
                                 fullWidth
-                                name="reason"
+                                name="Notes"
                                 label="Reason"
                                 type="text"
-                                id="reason"
-                                autoComplete="reason"
-                                value={requestData.reason}
+                                id="Notes"
+                                autoComplete="Notes"
+                                value={values.Notes}
                                 onChange={handleChange}
-                                error={touched.reason && Boolean(errors.reason)}
-                                helperText={touched.reason && errors.reason}
+                                error={touched.Notes && Boolean(errors.Notes)}
+                                helperText={touched.Notes && errors.Notes}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 required
                                 fullWidth
-                                name="numberOfUnits"
+                                name="UnitNumber"
                                 label="Number Of Units"
                                 type="number"
-                                id="numberOfUnits"
-                                autoComplete="numberOfUnits"
-                                value={requestData.numberOfUnits}
+                                id="UnitNumber"
+                                autoComplete="UnitNumber"
+                                value={values.UnitNumber}
                                 onChange={handleChange}
-                                error={touched.numberOfUnits && Boolean(errors.numberOfUnits)}
-                                helperText={touched.numberOfUnits && errors.numberOfUnits}
+                                error={touched.UnitNumber && Boolean(errors.UnitNumber)}
+                                helperText={touched.UnitNumber && errors.UnitNumber}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 required
                                 fullWidth
-                                id="dateOfBirth"
-                                label="Date Of Birth"
-                                name="dateOfBirth"
-                                autoComplete="dateOfBirth"
-                                value={requestData.dateOfBirth}
+                                id="BirthDate"
+                                label="Date of Birth"
+                                name="BirthDate"
+                                type="date"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                InputProps={{
+                                    inputProps: {
+                                        max: formatDate('2006/12/31'),
+                                    },
+                                }}
+                                value={values.BirthDate}
                                 onChange={handleChange}
-                                error={touched.dateOfBirth && Boolean(errors.dateOfBirth)}
-                                helperText={touched.dateOfBirth && errors.dateOfBirth}
+                                error={touched.BirthDate && Boolean(errors.BirthDate)}
+                                helperText={touched.BirthDate && errors.BirthDate}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -196,11 +259,10 @@ export default function AddRequests() {
                                 <InputLabel id="BloodType">Blood Type</InputLabel>
                                 <Select
                                     required
-                                    type="BloodType"
-                                    labelId="BloodType"
+                                    label="BloodType"
                                     id="BloodType"
                                     name="BloodType"
-                                    value={requestData.BloodType}
+                                    value={values.BloodType}
                                     onChange={handleChange}
                                     error={touched.BloodType && Boolean(errors.BloodType)}
                                 >
@@ -227,7 +289,7 @@ export default function AddRequests() {
                     </Grid>
 
                     {/* Agreement */}
-                    <Grid container sx={{ textAlign: 'left' }}>
+                    <Grid container sx={{ textAlign: "left" }}>
                         <FormControl required error={touched.agreement && Boolean(errors.agreement)}>
                             <FormGroup>
                                 <Grid item>
@@ -237,6 +299,7 @@ export default function AddRequests() {
                                         label="Blood sample has been taken for red cells or plasma"
                                         name="bloodSample"
                                         id="bloodSample"
+                                        checked={values.bloodSample}
                                         onChange={handleChange}
                                         error={touched.bloodSample && Boolean(errors.bloodSample)}
                                         helperText={touched.bloodSample && errors.bloodSample}
@@ -249,6 +312,7 @@ export default function AddRequests() {
                                         label="All required papers have been attached (Diagnosis, Doctor's signature, copy of patient id)"
                                         name="requiredPapers"
                                         id="requiredPapers"
+                                        checked={values.requiredPapers}
                                         onChange={handleChange}
                                         error={touched.requiredPapers && Boolean(errors.requiredPapers)}
                                         helperText={touched.requiredPapers && errors.requiredPapers}
@@ -263,10 +327,14 @@ export default function AddRequests() {
                         </FormControl>
                     </Grid>
 
-
                     {/* Submit button */}
-                    <Stack direction="row" justifyContent="center" mt={2}>
-                        <Button type="submit" variant="contained" color="primary">
+                    <Stack direction="column" alignItems="center" mt={4} spacing={2}>
+                        <label>Upload your required papers here</label><input type="file" onChange={handleFileUpload} multiple />
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            sx={{ width: 200, height: 60, fontSize: '1rem', padding: 3 ,fontWeight: "bold"}}>
                             Add Request
                         </Button>
                     </Stack>

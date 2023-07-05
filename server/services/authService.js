@@ -2,11 +2,12 @@
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config/constants');
 
-const generateToken = (userId, UserName,RoleId) => {
+const generateToken = (userId, UserName, BranchNo, branchTypeName ) => {
     const payload = {
         userId,
         UserName,
-        RoleId,
+        BranchNo,
+        branchTypeName,
     };
 
     const options = {

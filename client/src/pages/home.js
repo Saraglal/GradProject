@@ -13,21 +13,25 @@ import jwt from 'jsonwebtoken';
 
 const Home = () => {
     const donationData = [
-        { year: 2021, amount: 100 },
+        { year: 2023, amount: 100 },
         { year: 2022, amount: 200 },
-        { year: 2023, amount: 300 },
-        { year: 2020, amount: 100 },
+        { year: 2021, amount: 300 },
+        { year: 2020, amount: 150 },
         { year: 2019, amount: 200 },
         { year: 2018, amount: 500 },
     ];
 
     const token = localStorage.getItem('token');
-    let roleId = null;
+    let branchTypeName = null;
+    let branchNo = null;
+
     if (token) {
         try {
             const decodedToken = jwt.decode(token);
-            roleId = decodedToken && decodedToken.RoleId ? decodedToken.RoleId : null;
-            localStorage.setItem('roleId', roleId);
+            branchTypeName = decodedToken && decodedToken.branchTypeName ? decodedToken.branchTypeName : null;
+            branchNo = decodedToken && decodedToken.BranchNo ? decodedToken.BranchNo : null;
+            localStorage.setItem('branchTypeName', branchTypeName);
+            localStorage.setItem('branchNo', branchNo);
         } catch (error) {
             console.error('Error decoding token:', error);
         }
@@ -51,14 +55,8 @@ const Home = () => {
                     <Card>
                         <CardContent>
                             <VolunteerActivismIcon />
-                            {roleId == 1 ? (
-                                <h3>Central BloodBank</h3>
-                            ) : roleId == 2 ? (
-                                <h3>BloodBank</h3>
-                            ) : (
-                                <h3>Analysis Box 1</h3>
-                            )}
-                            <p>Some analysis description</p>
+                                <h3>{branchTypeName}</h3>
+                            <p>{branchNo}</p>
                         </CardContent>
                     </Card>
                 </div>
@@ -81,7 +79,6 @@ const Home = () => {
                     </Card>
                 </div>
             </div>
-
             <div className={style.row}>
                 <div className={style.analysisBox}>
                     <Card>

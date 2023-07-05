@@ -1,98 +1,126 @@
-import React from "react" ;
-import style from './doners.module.css'
+import React, { useState, useEffect } from "react";
+import style from './doners.module.css';
 import TopBar from '.././Components/topbar/topbar';
 import DonersTable from '.././Components/tables/donerstable';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
-import AddCircleSharpIcon from '@mui/icons-material/AddCircleSharp';
 import PersonAddSharpIcon from '@mui/icons-material/PersonAddSharp';
-import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
-import Modal from '@mui/material/Modal';
-import Button from '@mui/base/Button' ;
-import SlideBar from '.././Components/slidebar/slidebuttonbar';
-
-
-
-
-const styles = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '1px solid #fff',
-  borderRadius:'10px',
-  boxShadow: 20,
-  p:3,
-};
-
 
 
 const Doners = () => {
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const [searchText, setSearchText] = useState("");
+    const [initialData, setInitialData] = useState([]);
+    const [rows, setRows] = useState([]);
+    const [selectedDate, setSelectedDate] = useState(null); // Updated state and removed array destructuring
+    const branchNo = localStorage.getItem("branchNo");
+
+    useEffect(() => {
+
+        // Fetch data from the API endpoint
+        fetch("http://localhost:3000/transaction/getTransactions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ TransTypeId: 1, branchNo }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                // Process the received data and update the rows state
+                const processedRows = data.map((transaction) => {
+                    const transDate = new Date(transaction.TransDate).toLocaleDateString('en-GB', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                    });
+                    const today = new Date();
+                    const birthDateObj = new Date(transaction.BirthDate);
+                    let age = today.getFullYear() - birthDateObj.getFullYear();
+                    const monthDiff = today.getMonth() - birthDateObj.getMonth();
+                    if (
+                        monthDiff < 0 ||
+                        (monthDiff === 0 && today.getDate() < birthDateObj.getDate())
+                    ) {
+                        age--; // Subtract 1 from age if BirthDate has not occurred yet this year
+                    }
+
+                    return {
+                        TransId: transaction.TransId,
+                        HumanID: transaction.HumanID,
+                        HumanName: transaction.HumanName,
+                        age: age,
+                        PhoneNumber: transaction.PhoneNumber,
+                        Notes: transaction.Notes,
+                        BranchName: transaction.BranchName,
+                        LastDonation: transaction.LastDonation,
+                        BloodType: transaction.BloodType,
+                        TransDate: transDate,
+                        UnitNumber: transaction.UnitNumber,
+                        Accepted: transaction.Accepted,
+                    };
+                });
+
+                setInitialData(processedRows);
+                setRows(processedRows);
+            })
+            .catch((error) => {
+                console.error("Error retrieving transactions:", error);
+            });
+    }, []);
+
+    const handleSearchTextChange = (event) => {
+        const searchText = event.target.value;
+        setSearchText(searchText);
+
+        if (searchText === "") {
+            setRows(initialData);
+        } else {
+            const filteredRows = initialData.filter((row) =>
+                row.HumanName.toLowerCase().includes(searchText.toLowerCase())
+            );
+            setRows(filteredRows);
+        }
+    };
+
+    const handleDateChange = (date) => {
+        setSelectedDate(date);
+        const formattedDate = date.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        });
+        filterRowsByDate(formattedDate); // Convert date to JavaScript Date object
+    };
+
+    const filterRowsByDate = (date) => {
+        if (!date) {
+            setRows(initialData);
+        } else {
+            const filteredRows = initialData.filter((row) => row.TransDate > date);
+            setRows(filteredRows);
+        }
+    };
+
     return (
         <div>
-            <TopBar/>
-            {/*add & new buttons*/}
-            <Box  className= {`${style.actionBox}`} sx={{ '& > :not(style)': { m: 1 } }}>
-                <Fab onClick={handleOpen} variant="extended" color="primary" aria-label="add">
-                    <AddCircleSharpIcon /> <p>add</p>
-                </Fab>
+            <TopBar searchText={searchText}
+                    onSearchTextChange={handleSearchTextChange}
+                    onDateChange={handleDateChange}
+            />
+            {/* add & new buttons */}
+            <Box className={`${style.actionBox}`} sx={{ '& > :not(style)': { m: 1 } }}>
                 <a href="./add_doners">
                     <Fab variant="extended" color="success" aria-label="edit">
                         <PersonAddSharpIcon /> <p>new</p>
                     </Fab>
                 </a>
-                {/*the pop page of add button*/}
-                <Modal
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                >
-                    <Box className= {`${style.submit}`} sx={styles}>
-                        <Grid className= {`${style.grid}`} container spacing={2}>
-                        <Grid item xs={12}>
-                            <TextField
-                            required
-                            fullWidth
-                            id="national_number"
-                            label="National Number"
-                            name="National Number"
-                            autoComplete="National Number"
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                            required
-                            fullWidth
-                            id="units"
-                            label="Units"
-                            name="Units"
-                            autoComplete="Units"
-                            />
-                        </Grid>
-                        </Grid>
-                        <Button
-                            className= {`${style.button}`}
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 2, mb: 2 }}
-                            >
-                            Submit
-                        </Button>
-                    </Box>
-                </Modal>
             </Box>
-            <SlideBar/>
-            <DonersTable/>
+
+
+
+            <DonersTable rows={rows} />
         </div>
-    )
-}
+    );
+};
 
 export default Doners;

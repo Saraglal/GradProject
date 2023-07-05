@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import styles from './App.css';
 import Login from './Components/login/login';
 import SideBar from './Components/sidebar/sidebar';
@@ -13,18 +13,11 @@ import PlaceAnalysis from './pages/place_analysis';
 import DonerFile from './Components/tables/doner_profile';
 import RequestFile from './Components/tables/request_file';
 import Approval from './pages/approval';
+import AddBank from './pages/addBank';
+import NewBank from './pages/newBank';
 
 const MainContent = () => {
     const location = useLocation();
-
-    useEffect(() => {
-        // Check if the user is logged in
-        const token = localStorage.getItem('token');
-        if (!token && location.pathname !== '/login') {
-            // Redirect to login if not logged in
-            window.location.href = '/login';
-        }
-    }, [location.pathname]);
 
     return (
         <div>
@@ -41,6 +34,8 @@ const MainContent = () => {
                         <Route path="/doner_profile" element={<DonerFile />} />
                         <Route path="/request_file" element={<RequestFile />} />
                         <Route path="/approval" element={<Approval />} />
+                        <Route path="/addBank" element={<AddBank />} />
+                        <Route path="/newBank" element={<NewBank />} />
                     </Routes>
                 </SideBar>
             )}
@@ -50,14 +45,31 @@ const MainContent = () => {
 
 const App = () => {
     return (
+        <BrowserRouter>
+            <AppContent />
+        </BrowserRouter>
+    );
+};
+
+const AppContent = () => {
+    const location = useLocation();
+
+    useEffect(() => {
+        // Check if the user is logged in
+        const token = localStorage.getItem('token');
+        if (!token && location.pathname !== '/login') {
+            // Redirect to login if not logged in
+            window.location.href = '/login';
+        }
+    }, [location]);
+
+    return (
         <div className={styles.App}>
             <header>
-                <BrowserRouter>
-                    <Routes>
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/*" element={<MainContent />} />
-                    </Routes>
-                </BrowserRouter>
+                <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/*" element={<MainContent />} />
+                </Routes>
             </header>
         </div>
     );

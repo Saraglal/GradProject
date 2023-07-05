@@ -12,6 +12,13 @@ import FingerprintIcon from '@mui/icons-material/Fingerprint';
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import HomeIcon from '@mui/icons-material/Home';
 import ManIcon from '@mui/icons-material/Man';
+import IconButton from "@mui/material/IconButton";
+import EditIcon from "@mui/icons-material/Edit";
+import {MenuItem, Modal, TextField} from "@mui/material";
+import {useEffect, useState} from "react";
+import axios from "axios";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
 
 
 
@@ -19,12 +26,97 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1769aa' : '#fff',
   ...theme.typography.body2,
   padding: theme.spacing(3),
-  maxWidth:700,
+  maxWidth:750,
   color: theme.palette.text.primary,
 }));
 
 
 const DonerFile = () => {
+    const rowData = localStorage.getItem('row');
+    const row = JSON.parse(rowData);
+    console.log(row);
+    const [acceptedRows, setAcceptedRows] = useState([]);
+    const [isActionTaken, setIsActionTaken] = useState(false);
+    const [branchNames, setBranchNames] = useState([]);
+    const [selectedBranch, setSelectedBranch] = useState('');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [selectedRow, setSelectedRow] = useState(null);
+    const branchNo = localStorage.getItem('branchNo');
+
+
+    useEffect(() => {
+        fetchBranchNames();
+    }, []);
+
+    const fetchBranchNames = () => {
+        axios
+            .get('http://localhost:3000/branches/getBranches')
+            .then((response) => {
+                setBranchNames(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+
+    const handleAccept = (row) => {
+        if (!acceptedRows.includes(row.TransId)) {
+            axios
+                .post('http://localhost:3000/transaction/updateAccepted', {
+                    TransId: row.TransId,
+                    Accepted: 1,
+                    BranchName: selectedBranch,
+                })
+                .then((response) => {
+
+                    console.log(response.data);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+            setAcceptedRows([...acceptedRows, row.TransId]); // Add the row ID to the acceptedRows array
+            row.Accepted = 1; // Update the Accepted value of the row to 1
+            setIsActionTaken(true);
+        }
+    };
+    const handleButtonClick = (row) => {
+        setIsDropdownOpen(true);
+        setSelectedRow(row);
+        setSelectedBranch(row.BranchName);
+        console.log(selectedRow);
+        console.log(isDropdownOpen);
+        console.log(row.BranchName);
+    };
+
+    const handleDropdownChange = (event) => {
+        setSelectedBranch(event.target.value);
+    };
+
+    const handleSave = () => {
+        console.log('Selected Branch:', selectedBranch);
+        // Reset the states after saving
+        setIsDropdownOpen(false);
+    };
+
+    const handleReject = (row) => {
+        if (!acceptedRows.includes(row.TransId)) {
+            axios
+                .post('http://localhost:3000/transaction/updateAccepted', {
+                    TransId: row.TransId,
+                    Accepted: 2,
+                    BranchName: row.BranchName,
+                })
+                .then((response) => {
+                    console.log(response.data);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+            setAcceptedRows([...acceptedRows, row.TransId]); // Add the row ID to the acceptedRows array
+            row.Accepted = 2; // Update the Accepted value of the row to 2
+            setIsActionTaken(true);
+        }
+    };
         return (
    <Box sx={{ flexGrow: 1, overflow: 'hidden', px: 3 }}>
       <StyledPaper
@@ -37,7 +129,7 @@ const DonerFile = () => {
         }}
       >
           <Typography gutterBottom variant="h5" component="div" >
-                Mazen Mohamed ali mostafa
+              {row.HumanName}
             </Typography>
             <hr/>
             <br/>
@@ -50,34 +142,76 @@ const DonerFile = () => {
                 >
                 <Grid xs={6}>
                     <Typography gutterBottom variant="h6" >
-                        <FingerprintIcon/> 30022151123874
+                        <FingerprintIcon/> {row.HumanID}
                     </Typography>
                 </Grid>
                 <Grid xs={6}>
                     <Typography gutterBottom variant="h6">
-                        <EventIcon/>23 \ 4\ 1989
+                        <EventIcon/>{row.TransDate}
                     </Typography>
                 </Grid>
                 <Grid xs={6}>
                     <Typography gutterBottom variant="h6" >
-                        <PhoneIcon/>  01266327652
+                        <PhoneIcon/>  {row.PhoneNumber}
                     </Typography>
                 </Grid>
                 <Grid xs={6}>
                     <Typography gutterBottom variant="h6" >
-                        <WaterDropIcon/> A-
+                        <WaterDropIcon/> {row.BloodType}
                     </Typography>
                 </Grid>
-                <Grid xs={6}>
-                    <Typography gutterBottom variant="h6" >
-                            <ManIcon/> male
-                    </Typography>
-                </Grid>
-                <Grid xs={6}>
-                    <Typography gutterBottom variant="h6" >
-                        <HomeIcon/> Elgharbia - Tanta - 25 Saeed st
-                    </Typography>
-                </Grid>
+                 <Grid xs={6}>
+                     <Typography gutterBottom variant="h6">
+                         <HomeIcon/> {selectedBranch ? selectedBranch : row.BranchName}
+                         {parseInt(row.Accepted) === 0 && !isActionTaken && parseInt(branchNo) === 1 &&(
+                             <IconButton size="small" onClick={() => handleButtonClick(row)}>
+                                 <EditIcon />
+                             </IconButton>
+                         )}
+                     </Typography>
+                 </Grid>
+                     <Modal
+                         open={isDropdownOpen}
+                         onClose={() => setIsDropdownOpen(false)}
+                         aria-labelledby="select-branch-modal"
+                         aria-describedby="select-branch-modal-description"
+                     >
+                         <Box
+                             sx={{
+                                 position: 'absolute',
+                                 top: '50%',
+                                 left: '50%',
+                                 transform: 'translate(-50%, -50%)',
+                                 width: 300,
+                                 bgcolor: 'background.paper',
+                                 border: '2px solid #000',
+                                 boxShadow: 24,
+                                 p: 2,
+                             }}
+                         >
+                             <Typography id="select-branch-modal" variant="h6" component="div" sx={{ mb: 3 }}>
+                                 Select Branch
+                             </Typography>
+                             <TextField
+                                 select
+                                 label="Select Branch"
+                                 value={selectedBranch}
+                                 onChange={handleDropdownChange}
+                                 variant="outlined"
+                                 sx={{ mb: 2 }}
+                                 fullWidth
+                             >
+                                 {branchNames.map((branch) => (
+                                     <MenuItem key={branch.BranchName} value={branch.BranchName}>
+                                         {branch.BranchName}
+                                     </MenuItem>
+                                 ))}
+                             </TextField>
+                             <IconButton size="small" onClick={handleSave} >
+                                 Save
+                             </IconButton>
+                         </Box>
+                     </Modal>
             </Grid>
       </StyledPaper>
       <StyledPaper
@@ -140,6 +274,24 @@ const DonerFile = () => {
           </Grid>
         </Grid>
       </StyledPaper>
+       {parseInt(row.Accepted) === 0 && !isActionTaken &&  (
+           <Stack   paddingTop={2}
+                    direction="row"
+                    spacing={2}
+                    width="750px"
+                    sx={{
+                        margin: '0 auto',
+                        display: 'flex',
+                        justifyContent: 'center',
+                    }} >
+               <Button fullWidth variant="contained" color="success" onClick={() => handleAccept(row)}>
+                   Accept
+               </Button>
+               <Button fullWidth variant="contained" color="error"  onClick={() => handleReject(row)}>
+                   Reject
+               </Button>
+           </Stack>
+       )}
     </Box>
     )
 }

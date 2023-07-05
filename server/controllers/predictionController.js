@@ -1,18 +1,13 @@
 const authService = require('../services/authService');
 const User = require('../models/userModel');
-const branchTypeModel = require('../models/branchTypeModel');
-const branchModel = require('../models/branchModel');
+const humanos = require('../models/humanos')
 const sequelize = require('../config/database');
 const { QueryTypes } = require('sequelize');
 
-branchTypeModel.hasMany(branchModel);
-branchModel.belongsTo(branchTypeModel);
 
 
-const login = async (req, res) => {
+const getData = async (req, res) => {
     try {
-        const { username, password } = req.body;
-
         // Find the user in the database
         const user = await User.findOne({ where: { UserName: username } });
 
@@ -64,5 +59,5 @@ const login = async (req, res) => {
 };
 
 module.exports = {
-    login,
+    getPrediction,
 };

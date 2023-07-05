@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+sequelize.models = {}; // Clear the model cache
 
 const User = sequelize.define('bb_users', {
     UserID: {
@@ -18,7 +19,7 @@ const User = sequelize.define('bb_users', {
     },
     RoleId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
     },
     Phone1: {
         type: DataTypes.STRING,

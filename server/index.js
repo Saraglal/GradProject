@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const authRoutes = require('./routes/authRoutes');
+const transRoutes = require('./routes/transRoutes');
+const branchesRoutes = require('./routes/branchesRoutes');
 
 // Enable CORS
 app.use(cors());
@@ -9,6 +11,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/auth', authRoutes);
+app.use('/transaction', transRoutes);
+app.use('/branches', branchesRoutes);
 
 // Start the server
 app.listen(3000, () => {

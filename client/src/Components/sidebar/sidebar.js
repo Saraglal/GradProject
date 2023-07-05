@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import style from "./sidebar.module.css";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 // Sidebar Icons
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
@@ -9,12 +9,23 @@ import { MdDashboardCustomize } from "react-icons/md";
 import { BiDonateBlood } from "react-icons/bi";
 import { BsPersonFillAdd } from "react-icons/bs";
 import { TbReportAnalytics } from "react-icons/tb";
+import AddHomeWorkRoundedIcon from "@mui/icons-material/AddHomeWorkRounded";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
 const SideBar = ({ children }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const branchNo = localStorage.getItem("branchNo");
+    const navigate = useNavigate();
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
+    };
+
+    const logout = () => {
+        // Delete all localStorage items
+        localStorage.clear();
+        // Redirect to login page
+        navigate("/login");
     };
 
     const menuItem = [
@@ -49,9 +60,10 @@ const SideBar = ({ children }) => {
             icon: <MdDashboardCustomize />,
         },
         {
-            path: "/place_analysis",
-            name: "PlaceAnalysis",
-            icon: <TbReportAnalytics />,
+            path: "/AddBank",
+            name: "AddBank",
+            icon: <AddHomeWorkRoundedIcon />,
+            condition: branchNo === "1", // Conditionally render based on branchNo
         },
     ];
 
@@ -67,25 +79,43 @@ const SideBar = ({ children }) => {
                     </div>
                 </div>
 
-                {menuItem.map((item, index) => (
-                    <NavLink
-                        to={item.path}
-                        key={index}
-                        className={style.link}
-                        activeClassName={style.active}
-                    >
-                        <div className={style.icon}>{item.icon}</div>
-                        <div
-                            style={{
-                                opacity: isOpen ? 1 : 0,
-                                transition: "opacity 0.5s ease",
-                            }}
-                            className={style.link_text}
-                        >
-                            {item.name}
-                        </div>
-                    </NavLink>
-                ))}
+                <div className={style.menu_items}>
+                    {menuItem.map(
+                        (item, index) =>
+                            item.condition !== false && (
+                                <NavLink
+                                    to={item.path}
+                                    key={index}
+                                    className={style.link}
+                                    activeClassName={style.active}
+                                >
+                                    <div className={style.icon}>{item.icon}</div>
+                                    <div
+                                        style={{
+                                            opacity: isOpen ? 1 : 0,
+                                            display: isOpen ? "block" : "none",
+                                            transition: "opacity 0.5s ease",
+                                        }}
+                                        className={style.link_text}
+                                    >
+                                        {item.name}
+                                    </div>
+                                </NavLink>
+                            )
+                    )}
+                </div>
+
+                <div className={style.logout} onClick={logout}
+                >
+                    <ExitToAppIcon />
+                    <span style={{
+                        opacity: isOpen ? 1 : 0,
+                        display: isOpen ? "block" : "none",
+                        transition: "opacity 0.5s ease",
+                    }}
+                          className={style.logout_text}>Logout
+                    </span>
+                </div>
             </div>
             <main className={`${style["main-content"]} ${isOpen ? style.open : ""}`}>
                 {children}

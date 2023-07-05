@@ -1,49 +1,38 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const request = sequelize.define('bb_transactions', {
-    TansId: {
+const BranchModel = sequelize.define('bb_branches', {
+    BranchNo: {
         type: DataTypes.INTEGER,
+        primaryKey: true,
         autoIncrement: true,
         allowNull: false,
     },
-    TransDate: {
+    BranchName: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    mTransNo: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    TransTypeId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
-    Accepted: {
+    ContactName: {
         type: DataTypes.STRING,
         allowNull: true,
     },
-    HumanID: {
+    BranchTypeId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    BB_Phone: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    BB_City: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    BB_Area: {
         type: DataTypes.INTEGER,
         allowNull: true,
     },
-    BranchNo: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-    },
-    CampID: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-    },
-    UnitNumber: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-    },
-    BloodTypeId: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-    },
-    Notes: {
+    BB_Address: {
         type: DataTypes.INTEGER,
         allowNull: true,
     },
@@ -51,4 +40,4 @@ const request = sequelize.define('bb_transactions', {
     timestamps: false, // Disable timestamps (createdAt and updatedAt)
 });
 
-module.exports = request;
+module.exports = BranchModel;
