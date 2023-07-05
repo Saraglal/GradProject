@@ -12,6 +12,7 @@ const profileRouter = require('./profile/profile');
 const transactionsRouter = require('./Transactions/transactions');
 const getTransactionsRouter = require('./Transactions/getTransaction');
 const questionResponseRouter = require('./Transactions/questionResponse');
+const getFileRouter = require('./Transactions/getFile');
 
 const getBranchesRouter = require('./branches/getBranches')
 
@@ -25,6 +26,7 @@ app.use('/profile', profileRouter);
 app.use('/transactions', transactionsRouter);
 app.use('/getTransactions', getTransactionsRouter);
 app.use('/questionResponse', questionResponseRouter);
+app.use('/getFile', getFileRouter);
 
 app.use('/getBranches', getBranchesRouter);
 
