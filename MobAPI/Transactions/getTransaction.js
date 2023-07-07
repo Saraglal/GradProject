@@ -13,32 +13,54 @@ const connection = mysql.createConnection({
 
 router.post('/', (req, res) => {
     const { HumanID, TransTypeId } = req.query;
-    const getQuery = `SELECT
-                    bb_transactions.TransId,
-                    bb_branches.BranchName,
-                    bb_transactions.TransDate,
-                    bb_transactions.HumanName,
-                    bb_transactions.PhoneNumber,
-                    bb_transactions.TransTypeId,
-                    bb_transactions.Accepted,
-                    bb_transactions.HumanID,
-                    bb_transactions.BirthDate,
-                    bb_transactions.UnitNumber,
-                    bb_transactions.BloodType,
-                    bb_transactions.Notes
-                    FROM
-                    bb_transactions
-                    INNER JOIN bb_branches ON bb_transactions.BranchNo = bb_branches.BranchNo
-                    WHERE bb_transactions.HumanID = ? AND bb_transactions.TransTypeId = ?`;
+    const getQuery = `
+    SELECT
+        bb_transactions.TransId,
+        bb_branches.BranchName,
+        DATE_FORMAT(bb_transactions.TransDate, '%d-%m-%Y') AS TransDate,
+        bb_transactions.HumanName,
+        bb_transactions.PhoneNumber,
+        bb_transactions.TransTypeId,
+        bb_transactions.Accepted,
+        bb_transactions.HumanID,
+        DATE_FORMAT(bb_transactions.BirthDate, '%d-%m-%Y') AS BirthDate,
+        bb_transactions.UnitNumber,
+        bb_transactions.BloodType,
+        bb_transactions.Notes
+    FROM
+        bb_transactions
+        INNER JOIN bb_branches ON bb_transactions.BranchNo = bb_branches.BranchNo
+    WHERE
+        bb_transactions.HumanID = ? AND bb_transactions.TransTypeId = ?`;
+
     const values = [HumanID, TransTypeId];
     connection.query(getQuery, values, (err, result) => {
         if (result && result.length > 0) {
-            res.status(200).json({
-                message: 'Requests are retrieved successfully',
-                result: result
+            const count = result.length; // Count the selected records
+
+            const title = `
+            SELECT
+                bb_humanos.BloodType,
+                bb_humanos.LastDonation
+            FROM
+                bb_humanos
+            WHERE
+                bb_humanos.HumanID = ?`;
+
+            connection.query(title, [HumanID], (err, titleResult) => {
+                const bloodType = titleResult[0].BloodType;
+                const lastDonation = titleResult[0].LastDonation;
+
+                res.status(200).json({
+                    message: 'Requests are retrieved successfully',
+                    count: count,
+                    bloodType: bloodType,
+                    lastDonation: lastDonation,
+                    result: result
+                });
             });
         } else {
-            res.status(400).send({message: 'There is no requests for this National ID'});
+            res.status(400).send({ message: 'There are no requests for this National ID' });
         }
     });
 
