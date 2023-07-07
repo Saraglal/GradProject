@@ -31,7 +31,9 @@ router.post('/', (req, res) => {
         bb_transactions
         INNER JOIN bb_branches ON bb_transactions.BranchNo = bb_branches.BranchNo
     WHERE
-        bb_transactions.HumanID = ? AND bb_transactions.TransTypeId = ?`;
+        bb_transactions.HumanID = ? AND bb_transactions.TransTypeId = ?
+    ORDER BY
+        bb_transactions.TransDate DESC`;
 
     const values = [HumanID, TransTypeId];
     connection.query(getQuery, values, (err, result) => {
