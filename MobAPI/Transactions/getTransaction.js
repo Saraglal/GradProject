@@ -42,18 +42,20 @@ router.post('/', (req, res) => {
 
             const title = `
             SELECT
-                bb_humanos.LastDonation
+                DATE_FORMAT(bb_humanos.LastDonation, '%d-%m-%Y') AS LastDonation
             FROM
                 bb_humanos
             WHERE
                 bb_humanos.HumanID = ?`;
 
             connection.query(title, [HumanID], (err, titleResult) => {
+                const bloodType = result[0].BloodType;
                 const lastDonation = titleResult[0].LastDonation;
 
                 res.status(200).json({
                     message: 'Requests are retrieved successfully',
                     count: count,
+                    bloodType: bloodType,
                     lastDonation: lastDonation,
                     result: result
                 });
