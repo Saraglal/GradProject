@@ -42,7 +42,6 @@ router.post('/', (req, res) => {
 
             const title = `
             SELECT
-                bb_humanos.BloodType,
                 bb_humanos.LastDonation
             FROM
                 bb_humanos
@@ -50,13 +49,11 @@ router.post('/', (req, res) => {
                 bb_humanos.HumanID = ?`;
 
             connection.query(title, [HumanID], (err, titleResult) => {
-                const bloodType = titleResult[0].BloodType;
                 const lastDonation = titleResult[0].LastDonation;
 
                 res.status(200).json({
                     message: 'Requests are retrieved successfully',
                     count: count,
-                    bloodType: bloodType,
                     lastDonation: lastDonation,
                     result: result
                 });
