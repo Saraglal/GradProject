@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import styles from './App.css';
+
+// Pages
 import Login from './Components/login/login';
 import SideBar from './Components/sidebar/sidebar';
 import Home from './pages/home';
@@ -15,6 +17,8 @@ import RequestFile from './Components/tables/request_file';
 import Approval from './pages/approval';
 import AddBank from './pages/addBank';
 import NewBank from './pages/newBank';
+import UserPrediction from './pages/userPrediction';
+import SingleBloodStock from "./pages/singleBankStock";
 
 const MainContent = () => {
     const location = useLocation();
@@ -36,6 +40,8 @@ const MainContent = () => {
                         <Route path="/approval" element={<Approval />} />
                         <Route path="/addBank" element={<AddBank />} />
                         <Route path="/newBank" element={<NewBank />} />
+                        <Route path="/userPrediction" element={<UserPrediction />} />
+                        <Route path="/singleBloodStock" element={<SingleBloodStock />} />
                     </Routes>
                 </SideBar>
             )}

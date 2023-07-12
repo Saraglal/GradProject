@@ -33,7 +33,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-const BloodStock = () => {
+const SingleBloodStock = () => {
     const [stock, setStock] = useState([]);
     const [value, setValue] = useState('All');
 
@@ -42,9 +42,9 @@ const BloodStock = () => {
     }, []);
 
     const fetchBranchNames = () => {
-        const branchNo = localStorage.getItem('branchNo');
+        const branchName = localStorage.getItem('branchName');
         axios
-            .post('http://localhost:3000/transaction/getStock', { branchNo })
+            .post('http://localhost:3000/transaction/getSingleStock', { branchName })
             .then((response) => {
                 const responseData = response.data;
                 setStock(responseData);
@@ -90,10 +90,8 @@ const BloodStock = () => {
                             <TableRow>
                                 <StyledTableCell>ID</StyledTableCell>
                                 <StyledTableCell align="center">Blood Type</StyledTableCell>
-                                <StyledTableCell align="center">Doner ID</StyledTableCell>
-                                <StyledTableCell align="center">Donation Place</StyledTableCell>
-                                <StyledTableCell align="center">Date</StyledTableCell>
-                                <StyledTableCell align="center">Report</StyledTableCell>
+                                <StyledTableCell align="center">Unit Number</StyledTableCell>
+                                <StyledTableCell align="center">Status</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -104,22 +102,17 @@ const BloodStock = () => {
                                             {index + 1}
                                         </StyledTableCell>
                                         <StyledTableCell align="center">{row.BloodType}</StyledTableCell>
-                                        <StyledTableCell align="center">{row.HumanID}</StyledTableCell>
-                                        <StyledTableCell align="center">{row.BranchName}</StyledTableCell>
-                                        <StyledTableCell align="center">{row.TransDate}</StyledTableCell>
-                                        <StyledTableCell align="center">
-                                            <DescriptionIcon />
-                                            {row.report}
-                                        </StyledTableCell>
+                                        <StyledTableCell align="center">{row.UnitNumber}</StyledTableCell>
+                                        <StyledTableCell align="center" style={{color: parseInt(row.UnitNumber) > 5 ? "red" : "green"}} >{parseInt(row.UnitNumber) > 5 ?  "All Good!" : "Blood Needed!"}</StyledTableCell>
                                     </StyledTableRow>
                                 )
-                                ) : (
+                            ) : (
                                 <StyledTableRow>
-                                <StyledTableCell colSpan={6} align="center">
-                                No data available
-                                </StyledTableCell>
+                                    <StyledTableCell colSpan={6} align="center">
+                                        No data available
+                                    </StyledTableCell>
                                 </StyledTableRow>
-                                )}
+                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>
@@ -128,4 +121,4 @@ const BloodStock = () => {
     );
 };
 
-export default BloodStock;
+export default SingleBloodStock;

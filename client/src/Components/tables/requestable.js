@@ -22,7 +22,9 @@ const RequestsTable = ({ rows }) => {
             axios
                 .post('http://localhost:3000/transaction/updateAccepted', {
                     TransId: row.TransId,
+                    HumanID: row.HumanID,
                     Accepted: 1,
+                    BranchName: row.BranchName,
                 })
                 .then((response) => {
                     console.log(response.data);
@@ -42,6 +44,8 @@ const RequestsTable = ({ rows }) => {
                 .post('http://localhost:3000/transaction/updateAccepted', {
                     TransId: row.TransId,
                     Accepted: 2,
+                    HumanID: row.HumanID,
+                    BranchName: row.BranchName,
                 })
                 .then((response) => {
                     console.log(response.data);

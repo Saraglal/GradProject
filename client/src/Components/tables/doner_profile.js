@@ -19,6 +19,7 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 
 
@@ -30,8 +31,8 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.primary,
 }));
 
-
 const DonerFile = () => {
+
     const rowData = localStorage.getItem('row');
     const row = JSON.parse(rowData);
     console.log(row);
@@ -42,6 +43,7 @@ const DonerFile = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [selectedRow, setSelectedRow] = useState(null);
     const branchNo = localStorage.getItem('branchNo');
+    const [selectedFile, setSelectedFile] = useState(null);
 
 
     useEffect(() => {
@@ -66,6 +68,7 @@ const DonerFile = () => {
                     TransId: row.TransId,
                     Accepted: 1,
                     BranchName: selectedBranch,
+                    HumanID: row.HumanID,
                 })
                 .then((response) => {
 
@@ -105,6 +108,7 @@ const DonerFile = () => {
                     TransId: row.TransId,
                     Accepted: 2,
                     BranchName: row.BranchName,
+                    HumanID: row.HumanID,
                 })
                 .then((response) => {
                     console.log(response.data);
@@ -117,7 +121,28 @@ const DonerFile = () => {
             setIsActionTaken(true);
         }
     };
-        return (
+
+
+    const handleFileSelect = (event) => {
+        setSelectedFile(event.target.files[0]);
+    };
+
+    const handleUpload = () => {
+        if (selectedFile) {
+            const formData = new FormData();
+            formData.append('file', selectedFile, `${row.HumanID}.pdf`);
+
+            axios
+                .post('http://localhost:3000/transaction/uploadFile', formData)
+                .then((response) => {
+                    console.log('File uploaded successfully');
+                })
+                .catch((error) => {
+                    console.error('File upload failed', error);
+                });
+        }
+    };
+    return (
    <Box sx={{ flexGrow: 1, overflow: 'hidden', px: 3 }}>
       <StyledPaper
         sx={{
@@ -292,6 +317,15 @@ const DonerFile = () => {
                </Button>
            </Stack>
        )}
+           <input type="file" accept="application/pdf" onChange={handleFileSelect} />
+           <Button
+               variant="contained"
+               color="primary"
+               startIcon={<CloudUploadIcon />}
+               onClick={handleUpload}
+           >
+               Upload
+           </Button>
     </Box>
     )
 }

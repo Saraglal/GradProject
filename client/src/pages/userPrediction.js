@@ -33,7 +33,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-const BloodStock = () => {
+const UserPrediction = () => {
     const [stock, setStock] = useState([]);
     const [value, setValue] = useState('All');
 
@@ -42,13 +42,13 @@ const BloodStock = () => {
     }, []);
 
     const fetchBranchNames = () => {
-        const branchNo = localStorage.getItem('branchNo');
+        const BranchNo = localStorage.getItem('branchNo');
         axios
-            .post('http://localhost:3000/transaction/getStock', { branchNo })
+            .post('http://localhost:3000/prediction/getPrediction', { BranchNo })
             .then((response) => {
                 const responseData = response.data;
                 setStock(responseData);
-                console.log(stock);
+                console.log(responseData);
             })
             .catch((error) => {
                 console.error(error);
@@ -59,67 +59,42 @@ const BloodStock = () => {
         setValue(newValue === 0 ? 'All' : event.target.innerText);
     };
 
-    const filteredStock = value === 'All' ? stock : stock.filter((row) => row.BloodType === value);
-
     return (
         <div style={{ width: '100%' }}>
-            <Box sx={{ maxWidth: { xs: 500, sm: 1200 }, bgcolor: 'background.paper' }}>
-                <Tabs
-                    value={value}
-                    onChange={handleChange}
-                    variant="scrollable"
-                    scrollButtons="auto"
-                    aria-label="scrollable auto tabs example"
-                    sx={{ marginLeft: 25 }}
-                >
-                    <Tab label="All" />
-                    <Tab label="A+" />
-                    <Tab label="A-" />
-                    <Tab label="B+" />
-                    <Tab label="B-" />
-                    <Tab label="O+" />
-                    <Tab label="O-" />
-                    <Tab label="AB+" />
-                    <Tab label="AB-" />
-                </Tabs>
-            </Box>
             <div className={style.table}>
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 700 }} aria-label="customized table">
                         <TableHead>
                             <TableRow>
                                 <StyledTableCell>ID</StyledTableCell>
-                                <StyledTableCell align="center">Blood Type</StyledTableCell>
+                                <StyledTableCell align="center">Name</StyledTableCell>
                                 <StyledTableCell align="center">Doner ID</StyledTableCell>
-                                <StyledTableCell align="center">Donation Place</StyledTableCell>
-                                <StyledTableCell align="center">Date</StyledTableCell>
-                                <StyledTableCell align="center">Report</StyledTableCell>
+                                <StyledTableCell align="center">Phone Number</StyledTableCell>
+                                <StyledTableCell align="center">Blood Type</StyledTableCell>
+                                <StyledTableCell align="center">Ready to donate</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {filteredStock.length > 0 ? (
-                                filteredStock.map((row, index) =>
+                            {Array.isArray(stock) && stock.length > 0 ? (
+                                stock.map((row, index) =>
                                     <StyledTableRow key={index}>
                                         <StyledTableCell component="th" scope="row">
                                             {index + 1}
                                         </StyledTableCell>
-                                        <StyledTableCell align="center">{row.BloodType}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.HumanName}</StyledTableCell>
                                         <StyledTableCell align="center">{row.HumanID}</StyledTableCell>
-                                        <StyledTableCell align="center">{row.BranchName}</StyledTableCell>
-                                        <StyledTableCell align="center">{row.TransDate}</StyledTableCell>
-                                        <StyledTableCell align="center">
-                                            <DescriptionIcon />
-                                            {row.report}
-                                        </StyledTableCell>
+                                        <StyledTableCell align="center">{row.PhoneNumber}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.BloodType}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.prediction === 1 ? 'Ready' : 'Not Ready'}</StyledTableCell>
                                     </StyledTableRow>
                                 )
-                                ) : (
+                            ) : (
                                 <StyledTableRow>
-                                <StyledTableCell colSpan={6} align="center">
-                                No data available
-                                </StyledTableCell>
+                                    <StyledTableCell colSpan={6} align="center">
+                                        No data available
+                                    </StyledTableCell>
                                 </StyledTableRow>
-                                )}
+                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>
@@ -128,4 +103,4 @@ const BloodStock = () => {
     );
 };
 
-export default BloodStock;
+export default UserPrediction;

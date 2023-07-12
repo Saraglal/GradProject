@@ -1,60 +1,100 @@
-const authService = require('../services/authService');
-const User = require('../models/userModel');
-const humanos = require('../models/humanos')
 const sequelize = require('../config/database');
-const { QueryTypes } = require('sequelize');
+const { spawn } = require('child_process');
 
-
-
-const getData = async (req, res) => {
+const getDonationData = async (BranchNo) => {
     try {
-        // Find the user in the database
-        const user = await User.findOne({ where: { UserName: username } });
+        const query = `CALL GetDonationDetails(:BranchNo)`;
 
-        if (!user) {
-            return res.status(401).json({ message: 'Invalid credentials' });
-        }
-
-        // Compare the password with the password from the database
-        if (password !== user.PWD) {
-            return res.status(401).json({ message: 'Invalid credentials' });
-        }
-
-        const branchNo = user.BranchNo;
-
-        // Sequelize query
-        sequelize.query(
-            'SELECT bb_branchtypes.BranchTypename ' +
-            'FROM bb_branches ' +
-            'INNER JOIN bb_branchtypes ON bb_branches.BranchTypeId = bb_branchtypes.BranchTypeId ' +
-            'WHERE bb_branches.BranchNo = :branchNo',
-            {
-                type: QueryTypes.SELECT,
-                replacements: { branchNo: branchNo },
-            }
-        )
-            .then(results => {
-                console.log(results[0].BranchTypename);
-                // Generate a token
-                const token = authService.generateToken(
-                    user.UserID,
-                    user.UserName,
-                    user.BranchNo,
-                    results[0].BranchTypename,
-                );
-                res.json({ token });
-            })
-            .catch(error => {
-                console.error(error);
-            });
-
-
-
-        // Send the token as a response to the client
-
+        const results = await sequelize.query(query, {
+            replacements: { BranchNo },
+        });
+        return results;
     } catch (error) {
-        console.error('Error during login:', error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error retrieving donation details:', error);
+        throw error;
+    }
+};
+const getHumanData = async (BranchNo) => {
+    try {
+        const query = `CALL GetHumanDetails(:BranchNo)`;
+
+        const results = await sequelize.query(query, {
+            replacements: { BranchNo },
+        });
+        return results;
+    } catch (error) {
+        console.error('Error retrieving donation details:', error);
+        throw error;
+    }
+};
+
+const getPrediction = (req, res, BranchNo) => {
+    try {
+        getDonationData(BranchNo)
+            .then((data) => {
+                // Transform the data array
+                const transformedData = data.map(({ TotalTransactions, TotalAmount, MonthsSinceFirstDonation, MonthsSinceLastDonation }) => {
+                    return [TotalTransactions, TotalAmount, MonthsSinceFirstDonation, MonthsSinceLastDonation];
+                });
+
+                // Spawn a child process to execute the Python script
+                const pythonScript = spawn('python', ['-u', 'C:/Users/zezoo/Downloads/Donatin Predection/model.py']);
+                console.log('Node.js is running correctly.');
+
+                // Send the transformed data to the Python script as a JSON string
+                const transformedDataString = JSON.stringify(transformedData);
+                console.log("Data to be sent:", transformedDataString);
+                pythonScript.stdin.write(transformedDataString);
+                pythonScript.stdin.end();
+
+                // Collect the output from the Python script
+                let result = '';
+                let error = '';
+
+                pythonScript.stdout.on('data', (data) => {
+                    result += data.toString();
+                });
+
+                pythonScript.stderr.on('data', (data) => {
+                    error += data.toString();
+                });
+
+                // Handle the completion of the Python script
+                pythonScript.on('close', (code) => {
+                    if (parseInt(code) === 0) {
+                        if (error) {
+                            console.error('Error executing Python script:4', error);
+                            res.status(500).json({ error: 'Internal Server Error' });
+                        } else {
+                            const predictionArray = JSON.parse(result.trim());
+
+                            // Get human data
+                            getHumanData(BranchNo)
+                                .then((humanData) => {
+                                    const predictionDetails = humanData.map((obj, index) => {
+                                        return { ...obj, prediction: predictionArray[index] };
+                                    });
+                                    res.status(200).json(predictionDetails);
+                                })
+                                .catch((error) => {
+                                    console.error('Error retrieving human details:', error);
+                                    res.status(500).json({ error: 'Internal Server Error' });
+                                });
+                        }
+                    } else {
+                        console.error('Error executing Python script');
+                        res.status(500).json({ error: 'Internal Server Error' });
+                    }
+                });
+
+            })
+            .catch((error) => {
+                console.error('Error retrieving donation details:', error);
+                res.status(500).json({ error: 'Internal Server Error3' });
+            });
+    } catch (error) {
+        console.error('Error retrieving donation details:', error);
+        res.status(500).json({ error: 'Internal Server Error4' });
     }
 };
 

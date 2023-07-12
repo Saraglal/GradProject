@@ -11,6 +11,9 @@ import { BsPersonFillAdd } from "react-icons/bs";
 import { TbReportAnalytics } from "react-icons/tb";
 import AddHomeWorkRoundedIcon from "@mui/icons-material/AddHomeWorkRounded";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import AppsRoundedIcon from '@mui/icons-material/AppsRounded';
+import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
+
 
 const SideBar = ({ children }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -61,9 +64,14 @@ const SideBar = ({ children }) => {
         },
         {
             path: "/AddBank",
-            name: "AddBank",
-            icon: <AddHomeWorkRoundedIcon />,
+            name: "Banks",
+            icon: <AppsRoundedIcon />,
             condition: branchNo === "1", // Conditionally render based on branchNo
+        },
+        {
+            path: "/userPrediction",
+            name: "UserPrediction",
+            icon: <HistoryRoundedIcon />,
         },
     ];
 

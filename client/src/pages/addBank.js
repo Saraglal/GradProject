@@ -12,6 +12,7 @@ import CallIcon from "@mui/icons-material/Call";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import axios from "axios";
 import Box from "@mui/material/Box";
+import { AssignmentTurnedIn  } from '@mui/icons-material';
 
 export default function AddBank() {
     const [branches, setBranches] = useState([]);
@@ -22,13 +23,17 @@ export default function AddBank() {
 
     const fetchBranchNames = () => {
         axios
-            .get("http://localhost:3000/transaction/getBranches")
+            .get("http://localhost:3000/branches/getBranches")
             .then((response) => {
                 setBranches(response.data);
             })
             .catch((error) => {
                 console.error(error);
             });
+    };
+    const handleDetailsClick = (branchName) => {
+        localStorage.setItem('branchName', branchName);
+        window.location.href = 'singleBloodStock';
     };
     const branchNo = localStorage.getItem('branchNo');
     if (parseInt(branchNo) !== 1) {
@@ -73,31 +78,44 @@ export default function AddBank() {
                                     }}
                                 />
                                 <CardContent>
-                                        <Typography variant="body1" align="left" key={branch.BB_Address}>
-                                            <div
-                                                style={{
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                }}
-                                            >
-                                                <LocationOnIcon /> <a href={branch.BB_Address} >{branch.BB_Address}</a>
-                                            </div>
-                                        </Typography>
-                                        <Typography variant="body1" align="left" key={branch.BB_Phone}>
-                                            <div
-                                                style={{
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                }}
-                                            >
-                                                <CallIcon /> {branch.BB_Phone}
-                                            </div>
-                                        </Typography>
+                                    <Typography variant="body1" align="left" key={branch.BB_Address}>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <LocationOnIcon /> <a href={branch.BB_Address} >{branch.BB_Address}</a>
+                                        </div>
+                                    </Typography>
+                                    <Typography variant="body1" align="left" key={branch.BB_Phone}>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <CallIcon /> {branch.BB_Phone}
+                                        </div>
+                                    </Typography>
+                                    <Typography variant="body1" align="left" key={branch.NeedsBlood}>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                color: branch.NeedsBlood === 1 ? "red" : "green",
+                                            }}
+                                        >
+                                            <AssignmentTurnedIn />
+                                            {branch.NeedsBlood === 1 ? "Blood Needed!" : "All Good!"}
+                                        </div>
+                                    </Typography>
+
                                 </CardContent>
                                 <CardActions>
                                     <Grid container spacing={2}>
                                         <Grid item xs={12} sm={6}>
-                                            <Button fullWidth variant="contained" href="./bloodstock">
+                                            <Button fullWidth variant="contained" onClick={() => handleDetailsClick(branch.BranchName)}>
                                                 Details
                                             </Button>
                                         </Grid>

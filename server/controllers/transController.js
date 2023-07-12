@@ -3,6 +3,11 @@ const { QueryTypes } = require('sequelize');
 const transModel = require('../models/transModel');
 const BBHumanos = require('../models/humanos');
 const branchModel = require('../models/branchModel');
+const fs = require('fs');
+const axios = require('axios');
+const FormData = require('form-data');
+const sendNotification = require('../services/notificationService');
+
 
 // Create a new Transaction
 const addTransaction = async (req, res) => {
@@ -167,9 +172,10 @@ const getTransactions = async (req, res) => {
 };
 
 
-//Update the Accepted status
+
+// Update the Accepted status
 const updateAccepted = async (req, res) => {
-    const { Accepted, TransId, BranchName } = req.body;
+    const { Accepted, TransId, BranchName, HumanID } = req.body;
     console.log(BranchName);
     // Update the Accepted field
     transModel
@@ -178,13 +184,32 @@ const updateAccepted = async (req, res) => {
             { where: { TransId: TransId } }
         )
         .then((result) => {
-            console.log(result); // Number of affected rows
+            console.log(result);
+            // Send notification to the user
+            const title = 'Request Status Update';
+            const body = `Your request (TransId: ${TransId}) has been ${parseInt(Accepted) === 1 ? 'accepted' : 'rejected'}.`;
+            const data = {
+                type: 'order',
+                id: TransId,
+                click_action: 'FLUTTER_NOTIFICATION_CLICK'
+            };
+
+            BBHumanos.findOne({
+                attributes: ['Token'],
+                where: {
+                    HumanID: HumanID,
+                },
+            }).then((user) => {
+
+                sendNotification(user.Token, title, body, data);
+            }).catch((error) => {
+                console.error('Error retrieving user token:', error);
+            });
         })
         .catch((error) => {
             console.error(error);
         });
 };
-
 
 //Get the Blood Banks associated with transactions
 const getBloodBanks = async (req, res) => {
@@ -209,10 +234,111 @@ const getBloodBanks = async (req, res) => {
         });
 };
 
+const getStock = async (req, res) => {
+    try {
+        const { branchNo } = req.body;
+        const TransTypeId = 1;
+        const Accepted = 1;
+        let results;
+
+        if (parseInt(branchNo) === 1) {
+            results = await sequelize.query(
+                'SELECT bb_transactions.BloodType, bb_transactions.HumanID, bb_transactions.TransDate, bb_branches.BranchName ' +
+                'FROM bb_transactions ' +
+                'INNER JOIN bb_branches ON bb_transactions.BranchNo = bb_branches.BranchNo ' +
+                'WHERE bb_transactions.TransTypeId = :TransTypeId AND bb_transactions.Accepted = :Accepted',
+                {
+                    type: QueryTypes.SELECT,
+                    replacements: { TransTypeId: TransTypeId, Accepted: Accepted },
+                }
+            );
+        } else {
+            results = await sequelize.query(
+                'SELECT bb_transactions.BloodType, bb_transactions.HumanID, bb_transactions.TransDate, bb_branches.BranchName ' +
+                'FROM bb_transactions ' +
+                'INNER JOIN bb_branches ON bb_transactions.BranchNo = bb_branches.BranchNo ' +
+                'WHERE bb_transactions.TransTypeId = :TransTypeId AND bb_transactions.Accepted = :Accepted AND bb_transactions.BranchNo = :branchNo',
+                {
+                    type: QueryTypes.SELECT,
+                    replacements: { TransTypeId: TransTypeId, Accepted: Accepted, branchNo: branchNo },
+                }
+            );
+        }
+
+        res.status(200).json(results);
+    } catch (error) {
+        console.error('Error retrieving transactions:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+const getSingleStock = async (req, res) => {
+    try {
+        const { branchName } = req.body;
+
+            const results = await sequelize.query(
+                `
+                      SELECT
+                        bb_branches.BranchName,
+                        bb_transactions.BloodType,
+                        COUNT(bb_transactions.TransId) AS UnitNumber
+                      FROM
+                        bb_transactions
+                        INNER JOIN bb_branches ON bb_transactions.BranchNo = bb_branches.BranchNo
+                      WHERE
+                        bb_transactions.TransTypeId = 1
+                        AND bb_branches.BranchName = :branchName
+                      GROUP BY
+                        bb_transactions.BloodType
+                    `,
+                {
+                    type: QueryTypes.SELECT,
+                    replacements: { branchName: branchName},
+                }
+            );
+        res.status(200).json(results);
+    } catch (error) {
+        console.error('Error retrieving transactions:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+const uploadFile = async (req, res, clientId, clientSecret, accessToken, uploadFolderId) => {
+    try {
+        const { path: filePath, originalname: fileName } = req.file;
+
+        const fileData = fs.createReadStream(filePath);
+        const formData = new FormData();
+        formData.append('file', fileData, fileName);
+
+        const response = await axios.post(`https://upload.box.com/api/2.0/files/content`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${accessToken}`,
+                'User-Agent': 'API-Explorer-Request',
+            },
+            params: {
+                parent_id: uploadFolderId,
+            },
+        });
+
+        console.log('File uploaded successfully');
+        console.log('File ID:', response.data.entries[0].id);
+
+        res.status(200).json({ fileId: response.data.entries[0].id });
+    } catch (error) {
+        console.error('File upload failed:', error.response.data);
+        res.status(500).json({ error: 'File upload failed' });
+    }
+};
 
 module.exports = {
     addTransaction,
     getTransactions,
     getBloodBanks,
     updateAccepted,
+    getStock,
+    getSingleStock,
+    uploadFile,
 };
+

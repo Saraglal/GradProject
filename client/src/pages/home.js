@@ -48,7 +48,6 @@ const Home = () => {
 
     return (
         <div className={style.container}>
-            <TopBar />
 
             <div className={style.row}>
                 <div className={style.analysisBox}>
@@ -64,8 +63,8 @@ const Home = () => {
                     <Card>
                         <CardContent>
                             <VolunteerActivismIcon />
-                            <h3>Analysis Box 2</h3>
-                            <p>Some analysis description</p>
+                            <h3>Total Donations</h3>
+                            <p>528</p>
                         </CardContent>
                     </Card>
                 </div>
@@ -73,37 +72,8 @@ const Home = () => {
                     <Card>
                         <CardContent>
                             <VolunteerActivismIcon />
-                            <h3>Analysis Box 3</h3>
-                            <p>Some analysis description</p>
-                        </CardContent>
-                    </Card>
-                </div>
-            </div>
-            <div className={style.row}>
-                <div className={style.analysisBox}>
-                    <Card>
-                        <CardContent>
-                            <LocationOnIcon />
-                            <h3>Analysis Box 4</h3>
-                            <p>Some analysis description</p>
-                        </CardContent>
-                    </Card>
-                </div>
-                <div className={style.analysisBox}>
-                    <Card>
-                        <CardContent>
-                            <LocationOnIcon />
-                            <h3>Analysis Box 5</h3>
-                            <p>Some analysis description</p>
-                        </CardContent>
-                    </Card>
-                </div>
-                <div className={style.analysisBox}>
-                    <Card>
-                        <CardContent>
-                            <TaskAltIcon />
-                            <h3>Analysis Box 6</h3>
-                            <p>Some analysis description</p>
+                            <h3>Total Blood Requests</h3>
+                            <p>252</p>
                         </CardContent>
                     </Card>
                 </div>
