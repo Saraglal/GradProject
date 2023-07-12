@@ -1,5 +1,6 @@
 const sequelize = require('../config/database');
 const { spawn } = require('child_process');
+const path = require('path');
 
 const getDonationData = async (BranchNo) => {
     try {
@@ -38,7 +39,9 @@ const getPrediction = (req, res, BranchNo) => {
                 });
 
                 // Spawn a child process to execute the Python script
-                const pythonScript = spawn('python', ['-u', 'C:/Users/zezoo/Downloads/Donatin Predection/model.py']);
+                const currentDirectory = __dirname;
+                const pythonScriptPath = path.join(currentDirectory, '..', 'Donatin Predection', 'model.py');
+                const pythonScript = spawn('python', [pythonScriptPath]);
                 console.log('Node.js is running correctly.');
 
                 // Send the transformed data to the Python script as a JSON string

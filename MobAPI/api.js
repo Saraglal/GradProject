@@ -8,6 +8,7 @@ const forgotPasswordRouter = require('./auth/forgot-password');
 const resetPasswordRouter = require('./auth/reset-password');
 
 const profileRouter = require('./profile/profile');
+const getNotificationRouter = require('./profile/getNotifications');
 
 const transactionsRouter = require('./Transactions/transactions');
 const getTransactionsRouter = require('./Transactions/getTransaction');
@@ -22,6 +23,7 @@ app.use('/forgot-password', forgotPasswordRouter);
 app.use('/reset-password', resetPasswordRouter);
 
 app.use('/profile', profileRouter);
+app.use('/getNotifications', getNotificationRouter);
 
 app.use('/transactions', transactionsRouter);
 app.use('/getTransactions', getTransactionsRouter);

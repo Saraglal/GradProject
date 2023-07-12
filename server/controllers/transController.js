@@ -183,7 +183,7 @@ const updateAccepted = async (req, res) => {
             { Accepted: Accepted, BranchNo: sequelize.literal(`(SELECT BranchNo FROM bb_branches WHERE BranchName = '${BranchName}')`) },
             { where: { TransId: TransId } }
         )
-        .then((result) => {
+        .then(async (result) => {
             console.log(result);
             // Send notification to the user
             const title = 'Request Status Update';
@@ -194,17 +194,27 @@ const updateAccepted = async (req, res) => {
                 click_action: 'FLUTTER_NOTIFICATION_CLICK'
             };
 
-            BBHumanos.findOne({
-                attributes: ['Token'],
-                where: {
-                    HumanID: HumanID,
-                },
-            }).then((user) => {
+            try {
+                const user = await BBHumanos.findOne({
+                    attributes: ['Token'],
+                    where: {
+                        HumanID: HumanID,
+                    },
+                });
 
-                sendNotification(user.Token, title, body, data);
-            }).catch((error) => {
+                await sendNotification(user.Token, title, body, data);
+
+                // Insert data into bb_notifications table
+                await sequelize.query(
+                    'INSERT INTO bb_notifications (NotifyTitle, NotifyBody, HumanID) VALUES (?, ?, ?)',
+                    {
+                        replacements: [title, body, HumanID],
+                        type: QueryTypes.INSERT,
+                    }
+                );
+            } catch (error) {
                 console.error('Error retrieving user token:', error);
-            });
+            }
         })
         .catch((error) => {
             console.error(error);
