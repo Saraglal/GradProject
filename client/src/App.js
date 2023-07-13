@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import jwtDecode from 'jwt-decode';
 import styles from './App.css';
 
 // Pages
@@ -61,11 +62,21 @@ const AppContent = () => {
     const location = useLocation();
 
     useEffect(() => {
-        // Check if the user is logged in
-        const token = localStorage.getItem('token');
-        if (!token && location.pathname !== '/login') {
-            // Redirect to login if not logged in
-            window.location.href = '/login';
+        const checkTokenExpiration = () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                const decodedToken = jwtDecode(token);
+                const currentTime = Date.now() / 1000;
+                if (decodedToken.exp < currentTime) {
+                    return false; // Token has expired
+                }
+            }
+            return true; // Token is valid or not found
+        };
+
+        const isTokenValid = checkTokenExpiration();
+        if (!isTokenValid && location.pathname !== '/login') {
+            return <Navigate to="/login" />; // Redirect to login if token has expired
         }
     }, [location]);
 
