@@ -53,13 +53,18 @@ router.post('/', (req, res) => {
                 const bloodType = titleResult[0].BloodType;
                 const lastDonation = titleResult[0].LastDonation;
 
-                res.status(200).json({
+                let response = {
                     message: 'Requests are retrieved successfully',
-                    count: count,
-                    bloodType: bloodType,
-                    lastDonation: lastDonation,
                     result: result
-                });
+                };
+
+                if (parseInt(TransTypeId) === 1) {
+                    response.count = count;
+                    response.bloodType = bloodType;
+                    response.lastDonation = lastDonation;
+                }
+
+                res.status(200).json(response);
             });
         } else {
             res.status(400).send({ message: 'There are no requests for this National ID' });
