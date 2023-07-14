@@ -39,8 +39,8 @@ router.post('/', (req, res) => {
         res.status(400).send({message:'User is already registered'});
       } else {		
         // User is not registered, proceed with registration
-        const insertQuery = 'INSERT INTO bb_humanos (Token,HumanID, HumanName, BB_HumanEmail, HumanPassword, BB_HumanPhone, HumanGender, BB_HumanBDate) VALUES (?, ?, ?, ?, ?, ?, ?)';
-        const values = [token,id, name, email, hashedPassword, phone, gender, birthdate];
+        const insertQuery = 'INSERT INTO bb_humanos (Token,HumanID, HumanName, BB_HumanEmail, HumanPassword, BB_HumanPhone, HumanGender, BB_HumanBDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+        const values = [token, id, name, email, hashedPassword, phone, gender, birthdate];
 
         connection.query(insertQuery, values, (err, result) => {
           if (err) {

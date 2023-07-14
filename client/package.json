@@ -44,6 +44,7 @@
     "html-webpack-plugin": "2.29.0",
     "jest": "20.0.4",
     "jsonwebtoken": "^9.0.0",
+    "jwt-decode": "^3.1.2",
     "object-assign": "4.1.1",
     "patch-package": "^7.0.0",
     "postcss-flexbugs-fixes": "3.2.0",

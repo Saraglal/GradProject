@@ -109,6 +109,9 @@ export default function AddDoners() {
                                     label="National Number"
                                     type="text"
                                     id="National Number"
+                                    inputProps={{
+                                        maxLength: 14,
+                                    }}
                                     {...formik.getFieldProps('HumanID')}
                                     autoComplete="National Number"
                                     error={formik.touched.HumanID && formik.errors.HumanID}

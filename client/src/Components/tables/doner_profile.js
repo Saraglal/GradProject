@@ -259,46 +259,6 @@ const DonerFile = () => {
           </Grid>
         </Grid>
       </StyledPaper>
-      <StyledPaper
-        sx={{
-         border: 1,
-         textAlign: 'left',
-          my: 1,
-          mx: 'auto',
-          p: 2,
-        }}
-      >
-        <Grid container wrap="nowrap" spacing={3}>
-          <Grid item>
-            <Avatar sx={{ bgcolor: '#1769aa' }} >R</Avatar>
-          </Grid>
-          <Grid item xs>
-            <Typography noWrap><a href=''>Results15.10.2023</a></Typography>
-            <Typography noWrap variant="subtitle2">whole Blood</Typography>
-            <Typography noWrap variant="subtitle2">Ibn Sina Hospital</Typography>
-          </Grid>
-        </Grid>
-      </StyledPaper>
-      <StyledPaper
-        sx={{
-          border : 1,
-          textAlign: 'left',
-          my: 1,
-          mx: 'auto',
-          p: 2,
-        }}
-      >
-        <Grid container wrap="nowrap" spacing={3}>
-          <Grid item>
-            <Avatar sx={{ bgcolor: '#1769aa' }}>R</Avatar>
-          </Grid>
-          <Grid item xs>
-            <Typography noWrap><a href=''>Results15.10.2023</a></Typography>
-            <Typography noWrap variant="subtitle2">whole Blood</Typography>
-            <Typography noWrap variant="subtitle2">Ibn Sina Hospital</Typography>
-          </Grid>
-        </Grid>
-      </StyledPaper>
        {parseInt(row.Accepted) === 0 && !isActionTaken &&  (
            <Stack   paddingTop={2}
                     direction="row"
@@ -317,6 +277,7 @@ const DonerFile = () => {
                </Button>
            </Stack>
        )}
+       <Box paddingTop={2}>
            <input type="file" accept="application/pdf" onChange={handleFileSelect} />
            <Button
                variant="contained"
@@ -326,6 +287,7 @@ const DonerFile = () => {
            >
                Upload
            </Button>
+       </Box>
     </Box>
     )
 }

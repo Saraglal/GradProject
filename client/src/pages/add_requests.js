@@ -191,7 +191,7 @@ export default function AddRequests() {
                                 name="HumanID"
                                 autoComplete="HumanID"
                                 inputProps={{
-                                    maxLength: 15,
+                                    maxLength: 14,
                                 }}
                                 value={values.HumanID}
                                 onChange={handleChange}

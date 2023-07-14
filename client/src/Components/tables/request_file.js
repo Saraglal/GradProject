@@ -30,7 +30,7 @@ const RequestFile = () => {
     const [acceptedRows, setAcceptedRows] = useState([]);
     const [isActionTaken, setIsActionTaken] = useState(false);
     const [branchNames, setBranchNames] = useState([]);
-    const [selectedBranch, setSelectedBranch] = useState('');
+    const [selectedBranch, setSelectedBranch] = useState(row.BranchName);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [selectedRow, setSelectedRow] = useState(null);
 
@@ -41,7 +41,7 @@ const RequestFile = () => {
 
     const fetchBranchNames = () => {
         axios
-            .get('http://localhost:3000/transaction/getBranches')
+            .get('http://localhost:3000/Branches/getBranches')
             .then((response) => {
                 setBranchNames(response.data);
             })
@@ -239,54 +239,6 @@ const RequestFile = () => {
                         <Typography variant="h5" component="h1">
                             Attached Files
                         </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <StyledPaper
-                            sx={{
-                                border: 1,
-                                textAlign: 'left',
-                                my: 1,
-                                mx: 'auto',
-                                p: 2,
-                            }}
-                        >
-                            <Typography fontWeight="md">
-                                <b>Diagnosis files</b>
-                            </Typography>
-                            <Typography level="body2">12MB</Typography>
-                            <Stack direction="row" spacing={2}>
-                                <Button fullWidth variant="outlined">
-                                    Open
-                                </Button>
-                                <Button fullWidth variant="contained">
-                                    Download
-                                </Button>
-                            </Stack>
-                        </StyledPaper>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <StyledPaper
-                            sx={{
-                                border: 1,
-                                textAlign: 'left',
-                                my: 1,
-                                mx: 'auto',
-                                p: 2,
-                            }}
-                        >
-                            <Typography fontWeight="md">
-                                <b>Doctor's signature</b>
-                            </Typography>
-                            <Typography level="body2">12MB</Typography>
-                            <Stack direction="row" spacing={2}>
-                                <Button fullWidth variant="outlined">
-                                    Open
-                                </Button>
-                                <Button fullWidth variant="contained">
-                                    Download
-                                </Button>
-                            </Stack>
-                        </StyledPaper>
                     </Grid>
                     <Grid item xs={12}>
                         <StyledPaper
