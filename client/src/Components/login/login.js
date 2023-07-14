@@ -99,7 +99,6 @@ const Login = () => {
                 >
                     Login
                 </ColorButton>
-                <label>Don’t have an account? sign up</label>
             </Box>
         </div>
     );

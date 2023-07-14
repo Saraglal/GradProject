@@ -125,6 +125,9 @@ export default function AddDoners() {
                                     id="phone number"
                                     label="Phone Number"
                                     name="PhoneNumber"
+                                    inputProps={{
+                                        maxLength: 11,
+                                    }}
                                     {...formik.getFieldProps('PhoneNumber')}
                                     autoComplete="phone-number"
                                     error={formik.touched.PhoneNumber && formik.errors.PhoneNumber}

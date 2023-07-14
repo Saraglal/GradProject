@@ -39,11 +39,12 @@ const DonerFile = () => {
     const [acceptedRows, setAcceptedRows] = useState([]);
     const [isActionTaken, setIsActionTaken] = useState(false);
     const [branchNames, setBranchNames] = useState([]);
-    const [selectedBranch, setSelectedBranch] = useState('');
+    const [selectedBranch, setSelectedBranch] = useState(row.BranchName);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [selectedRow, setSelectedRow] = useState(null);
     const branchNo = localStorage.getItem('branchNo');
     const [selectedFile, setSelectedFile] = useState(null);
+    const [isUploadClicked, setIsUploadClicked] = useState(false);
 
 
     useEffect(() => {
@@ -141,6 +142,7 @@ const DonerFile = () => {
                     console.error('File upload failed', error);
                 });
         }
+        setIsUploadClicked(true);
     };
     return (
    <Box sx={{ flexGrow: 1, overflow: 'hidden', px: 3 }}>
@@ -239,6 +241,7 @@ const DonerFile = () => {
                      </Modal>
             </Grid>
       </StyledPaper>
+       {isUploadClicked && (
       <StyledPaper
         sx={{
           border : 1,
@@ -252,13 +255,14 @@ const DonerFile = () => {
           <Grid item>
             <Avatar sx={{ bgcolor: '#1769aa' }}>R</Avatar>
           </Grid>
+
           <Grid item xs>
             <Typography noWrap><a href=''>Results15.10.2023</a></Typography>
             <Typography noWrap variant="subtitle2">whole Blood</Typography>
             <Typography noWrap variant="subtitle2">Ibn Sina Hospital</Typography>
           </Grid>
         </Grid>
-      </StyledPaper>
+      </StyledPaper>)}
        {parseInt(row.Accepted) === 0 && !isActionTaken &&  (
            <Stack   paddingTop={2}
                     direction="row"

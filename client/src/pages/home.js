@@ -64,7 +64,7 @@ const Home = () => {
                         <CardContent>
                             <VolunteerActivismIcon />
                             <h3>Total Donations</h3>
-                            <p>528</p>
+                            <p>{parseInt(branchNo) === 1 ? 54 : 22}</p>
                         </CardContent>
                     </Card>
                 </div>
@@ -73,7 +73,7 @@ const Home = () => {
                         <CardContent>
                             <VolunteerActivismIcon />
                             <h3>Total Blood Requests</h3>
-                            <p>252</p>
+                            <p>{parseInt(branchNo) === 1 ? 38 : 12}</p>
                         </CardContent>
                     </Card>
                 </div>

@@ -60,7 +60,7 @@ const addTransaction = async (req, res) => {
                 if (!existingRecord.FirstDonation) {
                     console.log(TransDate);
                     // Update the value of FirstDonation with TransDate
-                    await BBHumanos.update({ FirstDonation: TransDate }, { where: { HumanID } });
+                    await BBHumanos.update({ FirstDonation: TransDate, LastDonation: TransDate }, { where: { HumanID } });
                 } else {
                     console.log(TransTypeId);
                     // Update the value of LastDonation with TransDate

@@ -48,7 +48,9 @@ const DonersTable = ({ rows }) => {
                     <TableCell align="center">{row.age}</TableCell>
                     <TableCell align="center">{row.PhoneNumber}</TableCell>
                     <TableCell align="center">{row.BloodType}</TableCell>
-                    <TableCell align="center">{row.LastDonation}</TableCell>
+                    <TableCell align="center">
+                        {row.LastDonation ? row.LastDonation : row.TransDate}
+                    </TableCell>
                     <TableCell align="center">{row.Notes}</TableCell>
 
                     <TableCell align="center">
