@@ -49,10 +49,7 @@ router.post('/', (req, res) => {
                 bb_humanos.HumanID = ?`;
 
             connection.query(title, [HumanID], (err, titleResult) => {
-                let bloodType
-                if(result[0].BloodType){
-                    bloodType = result[0].BloodType;
-                }
+                const bloodType = result[0].BloodType !== undefined ? result[0].BloodType : undefined;
                 const lastDonation = titleResult[0].LastDonation;
 
                 res.status(200).json({
