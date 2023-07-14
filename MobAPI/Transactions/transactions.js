@@ -82,8 +82,8 @@ router.post('/', (req, res) => {
                         res.status(500).json({ message: 'Error creating Transaction' });
                     } else {
                         if (!result.FirstDonation) {
-                            const updateQuery = 'UPDATE bb_humanos SET FirstDonation = ? WHERE HumanID = ?';
-                            values = [DonationDate, HumanID];
+                            const updateQuery = 'UPDATE bb_humanos SET LastDonation = ? ,FirstDonation = ?, BloodType = ? WHERE HumanID = ?';
+                            values = [DonationDate, DonationDate, BloodType, HumanID];
                             connection.query(updateQuery, values, (err, result) => {
                                 if (err) {
                                     console.log(err);
@@ -92,8 +92,8 @@ router.post('/', (req, res) => {
                                 res.status(201).json({ message: 'Transaction created successfully' });
                             });
                         } else {
-                            const updateQuery = 'UPDATE bb_humanos SET LastDonation = ? WHERE HumanID = ?';
-                            values = [DonationDate, HumanID];
+                            const updateQuery = 'UPDATE bb_humanos SET LastDonation = ? , BloodType = ? WHERE HumanID = ?';
+                            values = [DonationDate, BloodType, HumanID];
                             connection.query(updateQuery, values, (err, result) => {
                                 if (err) {
                                     console.log(err);
