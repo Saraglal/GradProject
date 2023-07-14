@@ -42,14 +42,15 @@ router.post('/', (req, res) => {
 
             const title = `
             SELECT
-                DATE_FORMAT(bb_humanos.LastDonation, '%d-%m-%Y') AS LastDonation
+                DATE_FORMAT(bb_humanos.LastDonation, '%d-%m-%Y') AS LastDonation,
+                bb_humanos.BloodType
             FROM
                 bb_humanos
             WHERE
                 bb_humanos.HumanID = ?`;
 
             connection.query(title, [HumanID], (err, titleResult) => {
-                const bloodType = result[0].BloodType !== undefined ? result[0].BloodType : undefined;
+                const bloodType = titleResult[0].BloodType !== undefined ? result[0].BloodType : undefined;
                 const lastDonation = titleResult[0].LastDonation;
 
                 res.status(200).json({
