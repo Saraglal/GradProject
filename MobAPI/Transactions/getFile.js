@@ -4,7 +4,7 @@ const axios = require('axios');
 
 const CLIENT_ID = '1bhxsakl36gc0f8og7260oan5571uffw';
 const CLIENT_SECRET = 'wcmDiRE8ywzXW1ZbizjueQfG1TvPN5oh';
-const ACCESS_TOKEN = 'aeryMQAzL1e4lwZxdxlZjK6NKiWsgMdM';
+const ACCESS_TOKEN = 'CTjBV3K6prnBDHj80PI6LueSYLypHqUc';
 const folderId = '215905083396';
 
 router.get('/', async (req, res) => {
