@@ -37,7 +37,7 @@ router.post('/', (req, res) => {
 
     const values = [HumanID, TransTypeId];
     connection.query(getQuery, values, (err, result) => {
-        if (result && result.length > 0 ) {
+        if (result.length > 0 ) {
             const count = result.length;
 
             const title = `
