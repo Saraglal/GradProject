@@ -103,7 +103,7 @@ const SingleBloodStock = () => {
                                         </StyledTableCell>
                                         <StyledTableCell align="center">{row.BloodType}</StyledTableCell>
                                         <StyledTableCell align="center">{row.UnitNumber}</StyledTableCell>
-                                        <StyledTableCell align="center" style={{color: parseInt(row.UnitNumber) > 5 ? "red" : "green"}} >{parseInt(row.UnitNumber) > 5 ?  "All Good!" : "Blood Needed!"}</StyledTableCell>
+                                        <StyledTableCell align="center" style={{color: parseInt(row.UnitNumber) > 5 ? "green" : "red"}} >{parseInt(row.UnitNumber) > 5 ?  "All Good!" : "Blood Needed!"}</StyledTableCell>
                                     </StyledTableRow>
                                 )
                             ) : (
